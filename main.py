@@ -27,7 +27,7 @@ def bottom_up(grammer, spec):
             return 'no program'
         P += new_programs
         for p in P:
-            if p[0] == 'S' and validate(p, spec):  #assuming p is a tuple of (V, program)
+            if p[0] == 'S' and validate(p[1], spec):  #assuming p is a tuple of (V, program)
                 return p
 
 
