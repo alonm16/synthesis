@@ -9,6 +9,8 @@ def can_create_program(non_terminals,keys):
 
 
 def create_programs(P, rule):
+    if len(rule) == 1 and not rule[0].isupper():
+        return []
     new_programs = []
     for symbol in rule:
         cur_len = len(new_programs)
@@ -24,9 +26,10 @@ def create_programs(P, rule):
                     new_programs += [old_program[:]]
         else:
             for i in range(cur_len):
-                new_programs[i] += symbol #TODO check whether its a fun ction
+                new_programs[i] += symbol
             if cur_len == 0:
                 new_programs = [[symbol]]
+    print(len(new_programs))
     return new_programs
 
 
@@ -41,16 +44,32 @@ def grow(P, derivation_rules, spec):  #Todo pruning and child form last iteratio
                 if var not in new_programs.keys():
                     new_programs[var] = []
                 new_programs[var] += create_programs(P, single_rule)
-    return new_programs
+    prune_programs = {}
+    for var in new_programs.keys(): #Todo: check if only compare programs from same var
+        for new_program in new_programs[var]:
+            for old_program in P[var]:
+                if compare(new_program, old_program, spec):
+                    break
+            if var not in prune_programs.keys():
+                prune_programs[var] = []
+            prune_programs[var] += [new_program[:]]
+
+    return prune_programs
+
+
+def compare(p1, p2, spec):
+    p1 = ''.join(p1)
+    p2 = ''.join(p2)
+    for (x, _) in spec:
+        if eval(p1) != eval(p2):
+            return False
+    return True
 
 
 def validate(p, spec):
-    program = ""
-    for symbol in p:
-        program += symbol
-    for (i, o) in spec:
-        print(program)
-        if eval(program, {"__builtins__": None}, {'a': i[0], 'b': i[1], 'c': i[2], 'x': i[3]}) != o:
+    program = ''.join(p)
+    for (x, o) in spec:
+        if eval(program) != o:
             return False
     return True
 
@@ -88,12 +107,11 @@ def bottom_up(grammer, spec):
             if var not in P.keys():
                 P[var] = []
             P[var] += new_programs[var]
-        for p in P['S']:
+        for p in new_programs['S']:
             if validate(p, spec):
                 return p
 
 
 if __name__ == "__main__":
-    grammer = ["C ::= a", "C ::= b", "C ::= c", "S ::= C", "S ::= ( S + S )"
-            , "S ::= ( S * N )" , "S ::= x", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
-    print(bottom_up(grammer, [([1,2,3,4],6), ([2,3,4,5],24)]))
+    grammer = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )", "N ::= 0", "N ::= 1"]
+    print(bottom_up(grammer, [(0, 0), (2, 4), (3, 9), (4, 16)]))
