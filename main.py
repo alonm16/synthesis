@@ -23,7 +23,7 @@ def create_programs(P, rule):
             new_programs = new_programs[cur_len:]
             if cur_len == 0:
                 for old_program in P[symbol]:
-                    new_programs += [(old_program[0][:], old_program[1])]
+                    new_programs += [(old_program[0], old_program[1])]
         else:
             for i in range(cur_len):
                 new_programs[i] = (new_programs[i][0] + symbol, new_programs[i][1])
@@ -57,7 +57,7 @@ def grow(P, derivation_rules, spec, depth):  #Todo pruning and child form last i
                 continue
             if var not in prune_programs.keys():
                 prune_programs[var] = []
-            prune_programs[var] += [(new_program[0][:], depth)]
+            prune_programs[var] += [(new_program[0], depth)]
 
     return prune_programs
 
@@ -120,10 +120,11 @@ def bottom_up(grammer, spec):
             P[var] += new_programs[var]
         for p in new_programs['S']:
             if validate(p[0], spec):
+                print(P)
                 return p[0]
         depth += 1
 
 
 if __name__ == "__main__":
     grammer = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )", "N ::= 0", "N ::= 1"]
-    print(bottom_up(grammer, [(0, 0), (2, 10), (3, 15), (4, 20)]))
+    print(bottom_up(grammer, [(0, 1), (2, 5), (3, 7), (4, 9)]))
