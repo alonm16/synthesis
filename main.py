@@ -6,20 +6,29 @@ def can_create_program(non_terminals,keys):
     return True
 
 
-def create_programs(P, rule): #not good!
+def create_programs(P, rule):
     new_programs = []
     for symbol in rule:
+        cur_len = len(new_programs)
         if symbol.isupper():
-            for i in range(len(new_programs)):
+            for i in range(cur_len):
+                iteration_programs = []
                 for old_program in P[symbol]:
-                    new_programs[i] += old_program
+                    iteration_programs += [new_programs[i] + old_program]
+                new_programs += iteration_programs
+            new_programs = new_programs[cur_len:]
+            if cur_len == 0:
+                for old_program in P[symbol]:
+                    new_programs += [old_program]
         else:
-            for i in range(len(new_programs)):
-                new_programs[i] += symbol #TODO check whether its a function
+            for i in range(cur_len):
+                new_programs[i] += symbol #TODO check whether its a fun ction
+            if cur_len == 0:
+                new_programs = [symbol]
     return new_programs
 
 
-
+"""iterating other all the derivation rules and if a rule can be applied a new program is created"""
 def grow(P, derivation_rules, spec):  #Todo pruning and child form last iteration
     keys = P.keys()
     new_programs = {}
@@ -37,7 +46,7 @@ def validate(p, spec):
             return False
     return True
 
-
+"""creating terminal rules and all derivation rules as a dectionary of the form: Var -> list of rules derived by the var"""
 def parse_grammer(grammer):
     derivation_rules = {}
     terminals_rules = {}
