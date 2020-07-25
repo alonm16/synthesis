@@ -50,7 +50,7 @@ def grow(P, derivation_rules, spec, depth):  #Todo pruning and child form last i
                 continue
             flag = False
             for old_program in P[var]:
-                if compare(new_program[0], old_program[0], spec):
+                if compare(new_program[0], old_program[0], spec): #Todo compare with programs from same depth
                     flag = True
                     break
             if flag:
