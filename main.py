@@ -26,9 +26,9 @@ def create_programs(P, rule):
                     new_programs += [(old_program[0][:], old_program[1])]
         else:
             for i in range(cur_len):
-                new_programs[i] = (new_programs[i][0] + [symbol], new_programs[i][1])
+                new_programs[i] = (new_programs[i][0] + symbol, new_programs[i][1])
             if cur_len == 0:
-                new_programs = [([symbol], 0)]
+                new_programs = [(symbol, 0)]
     return new_programs
 
 
@@ -63,8 +63,6 @@ def grow(P, derivation_rules, spec, depth):  #Todo pruning and child form last i
 
 
 def compare(p1, p2, spec):
-    p1 = ''.join(p1)
-    p2 = ''.join(p2)
     for (x, _) in spec:
         try:
             val1 = eval(p1)
@@ -80,10 +78,9 @@ def compare(p1, p2, spec):
 
 
 def validate(p, spec):
-    program = ''.join(p)
     for (x, o) in spec:
         try:
-            if eval(program) != o:
+            if eval(p) != o:
                 return False
         except:
             return False
@@ -101,7 +98,7 @@ def parse_grammer(grammer):
         if len(right) == 1 and not (right[0]).isupper():
             if left not in terminals_rules.keys():
                 terminals_rules[left] = []
-            terminals_rules[left] += [(right, 0)]
+            terminals_rules[left] += [(''.join(right), 0)]
         if left not in derivation_rules.keys():
             derivation_rules[left] = []
         derivation_rules[left] += [right]
@@ -123,11 +120,10 @@ def bottom_up(grammer, spec):
             P[var] += new_programs[var]
         for p in new_programs['S']:
             if validate(p[0], spec):
-                return ''.join(p[0])
+                return p[0]
         depth += 1
 
 
 if __name__ == "__main__":
-    grammer = ["C ::= 'a'", "C ::= 'b'", "C ::= 'c'", "S ::= C", "S ::= ( S + S )"
-            , "S ::= ( S * N )", "S ::= S [ N ]" , "S ::= x", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
-    print(bottom_up(grammer, [("aa", "aaaa"), ("abc", "abcabc"), ("12", "1212")]))
+    grammer = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )", "N ::= 0", "N ::= 1"]
+    print(bottom_up(grammer, [(0, 0), (2, 10), (3, 15), (4, 20)]))
