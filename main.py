@@ -1,3 +1,5 @@
+import time
+
 """if every nonterminal in the programs is already in a program we created then a new program can be created"""
 def can_create_program(non_terminals,keys):
     for non_terminal in non_terminals:
@@ -43,8 +45,12 @@ def grow(P, derivation_rules, spec):  #Todo pruning and child form last iteratio
 
 
 def validate(p, spec):
+    program = ""
+    for symbol in p:
+        program += symbol
     for (i, o) in spec:
-        if eval(p, {"__builtins__": None}, {'i': i}) != o:
+        print(program)
+        if eval(program, {"__builtins__": None}, {'a': i[0], 'b': i[1], 'c': i[2], 'x': i[3]}) != o:
             return False
     return True
 
@@ -88,6 +94,6 @@ def bottom_up(grammer, spec):
 
 
 if __name__ == "__main__":
-    grammer = ["C ::= 'a'", "C ::= 'b'", "C ::= 'c'", "S ::= C", "S ::= ( S + S )"
-            , "S ::= ( S * N )", "S ::= S [ N ]" , "S ::= x", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
-    bottom_up(grammer, [])
+    grammer = ["C ::= a", "C ::= b", "C ::= c", "S ::= C", "S ::= ( S + S )"
+            , "S ::= ( S * N )" , "S ::= x", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
+    print(bottom_up(grammer, [([1,2,3,4],6), ([2,3,4,5],24)]))
