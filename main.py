@@ -43,23 +43,25 @@ def grow(P, derivation_rules, spec, depth):  #Todo pruning and child form last i
                 if var not in new_programs.keys():
                     new_programs[var] = []
                 new_programs[var] += create_programs(P, single_rule)
-    prune_programs = {}
+    start_programs = []
     for var in new_programs.keys(): #Todo: check if only compare programs from same var
         for new_program in new_programs[var]:
             if new_program[1] < depth-1:
                 continue
             flag = False
             for old_program in P[var]:
-                if compare(new_program[0], old_program[0], spec): #Todo compare with programs from same depth
+                if compare(new_program[0], old_program[0], spec):
                     flag = True
                     break
             if flag:
                 continue
-            if var not in prune_programs.keys():
-                prune_programs[var] = []
-            prune_programs[var] += [(new_program[0], depth)]
+            if var not in P.keys():
+                P[var] = []
+            P[var] += [(new_program[0], depth)]
+            if var == 'S':
+                start_programs.append(new_program[0])
 
-    return prune_programs
+    return start_programs
 
 
 def compare(p1, p2, spec):
@@ -108,23 +110,17 @@ def parse_grammer(grammer):
 def bottom_up(grammer, spec):
     derivation_rules, P = parse_grammer(grammer)
     depth = 0
-    if 'S' not in P.keys():
-        P['S'] = []
     while True:
-        new_programs = grow(P, derivation_rules, spec, depth)
-        if not new_programs:
+        start_programs = grow(P, derivation_rules, spec, depth)
+        if not start_programs:
             return 'no program'
-        for var in new_programs.keys():
-            if var not in P.keys():
-                P[var] = []
-            P[var] += new_programs[var]
-        for p in new_programs['S']:
-            if validate(p[0], spec):
+        for p in start_programs:
+            if validate(p, spec):
                 print(P)
-                return p[0]
+                return p
         depth += 1
 
 
 if __name__ == "__main__":
     grammer = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )", "N ::= 0", "N ::= 1"]
-    print(bottom_up(grammer, [(0, 1), (2, 5), (3, 7), (4, 9)]))
+    print(bottom_up(grammer, [(0, 0), (2, 10), (3, 15), (4, 20)]))
