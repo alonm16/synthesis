@@ -1,13 +1,3 @@
-import time
-
-"""if every nonterminal in the programs is already in a program we created then a new program can be created"""
-def can_create_program(non_terminals,keys):
-    for non_terminal in non_terminals:
-        if not non_terminal in keys:
-            return False
-    return True
-
-
 def create_programs(P, rule):
     if len(rule) == 1 and not rule[0].isupper():
         return []
@@ -38,11 +28,11 @@ def grow(P, derivation_rules, spec, depth):  #Todo pruning and child form last i
     new_programs = {}
     for var in derivation_rules:
         for single_rule in derivation_rules[var]:
-            if can_create_program(single_rule[1], keys):
+            if all(x in keys for x in single_rule[1]):
                 if var not in new_programs.keys():
                     new_programs[var] = []
                 new_programs[var] += create_programs(P, single_rule[0])
-    start_programs = []
+
     for var in new_programs.keys(): #Todo: check if only compare programs from same var
         for new_program in new_programs[var]:
             if new_program[1] < depth-1:
@@ -57,10 +47,9 @@ def grow(P, derivation_rules, spec, depth):  #Todo pruning and child form last i
             if var not in P.keys():
                 P[var] = []
             P[var] += [(new_program[0], depth)]
-            if var == 'S':
-                start_programs.append(new_program[0])
-
-    return start_programs
+            if var == 'S' and validate(new_program[0], spec):
+                return new_program[0]
+    return None
 
 
 def compare(p1, p2, spec):
@@ -109,15 +98,15 @@ def parse_grammer(grammer):
 def bottom_up(grammer, spec):
     derivation_rules, P = parse_grammer(grammer)
     depth = 0
-    while True:
-        start_programs = grow(P, derivation_rules, spec, depth)
-        if not start_programs:
+    program = None
+    while not program:
+        previous_len = sum(len(P[var]) for var in P.keys())
+        program = grow(P, derivation_rules, spec, depth)
+        new_len = sum(len(P[var]) for var in P.keys())
+        if previous_len == new_len:
             return 'no program'
-        for p in start_programs:
-            if validate(p, spec):
-                print(P)
-                return p
         depth += 1
+    return program
 
 
 if __name__ == "__main__":
