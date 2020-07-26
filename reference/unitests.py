@@ -1,6 +1,6 @@
 import unittest
 import time
-from Synthesizer import Synthesizer
+from reference.Synthesizer import Synthesizer
 
 
 class TestSynthesizer(unittest.TestCase):

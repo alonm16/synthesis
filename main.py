@@ -38,11 +38,10 @@ def grow(P, derivation_rules, spec, depth):  #Todo pruning and child form last i
     new_programs = {}
     for var in derivation_rules:
         for single_rule in derivation_rules[var]:
-            non_terminals = [symbol for symbol in single_rule if symbol.isupper()]
-            if can_create_program(non_terminals, keys):
+            if can_create_program(single_rule[1], keys):
                 if var not in new_programs.keys():
                     new_programs[var] = []
-                new_programs[var] += create_programs(P, single_rule)
+                new_programs[var] += create_programs(P, single_rule[0])
     start_programs = []
     for var in new_programs.keys(): #Todo: check if only compare programs from same var
         for new_program in new_programs[var]:
@@ -103,7 +102,7 @@ def parse_grammer(grammer):
             terminals_rules[left] += [(''.join(right), 0)]
         if left not in derivation_rules.keys():
             derivation_rules[left] = []
-        derivation_rules[left] += [right]
+        derivation_rules[left] += [(right, [symbol for symbol in right if symbol.isupper()])]
     return derivation_rules, terminals_rules
 
 

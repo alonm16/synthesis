@@ -1,5 +1,5 @@
 import itertools
-from helper import *
+from reference.helper import *
 import time
 
 class Program(object):

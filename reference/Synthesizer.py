@@ -1,4 +1,4 @@
-import Program
+import reference.Program as Program
 
 class Synthesizer(object):
     def __init__(self, grammar, specs, depth_limt=3, user_sketch=None):
