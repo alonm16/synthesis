@@ -17,26 +17,37 @@ class Program:
     def calc(self):
         self.outputs = [eval(self.code) for (x, _) in Program.spec]
 
-    def compare(self, old_programs):
+    """"  def compare(self, old_programs):
         for old_program in old_programs:
             if all(o1 == o2 for (o1, o2) in zip(self.outputs, old_program.outputs)):
                 return True
         return False
+    """
+    def compare(self, seen_outputs : set):
+        if self.get_outputs_string() in seen_outputs:
+            return True
+        else:
+            return False
 
     def validate(self):
         return all(o1 == o2 for (o1, (i, o2)) in zip(self.outputs, Program.spec))
 
+    def get_outputs_string(self):
+        return str(self.outputs)
+
 
 class Synthesizer:
-    def __init__(self, grammar, spec, depth_limit=5, time_limit=10): #TODO change timelimit
+    def __init__(self, grammar, spec, depth_limit=5, time_limit=100): #TODO change timelimit
         self.spec = spec
         self.grammar = grammar
         self.vars_depth = {}
         self.P = {}
+        self.seen_outputs = {}
         self.depth_limit = depth_limit
         self.time_limit = time_limit
         self.time = None
         Program.set_spec(spec)
+
 
     def create_programs(self, rule):
         new_programs = [Program("")]
@@ -75,12 +86,16 @@ class Synthesizer:
                 if new_program.depth < depth-1:
                     continue
                 new_program.calc()
-                if new_program.compare(self.P[var]):
+                if var not in self.seen_outputs.keys():
+                    self.seen_outputs[var] = set()
+                if new_program.compare(self.seen_outputs[var]):
                     continue
                 if var not in self.P.keys():
                     self.P[var] = []
                 new_program.depth = depth
                 self.P[var] += [new_program]
+                curr_outputs = new_program.get_outputs_string()
+                self.seen_outputs[var].add(curr_outputs)
                 self.vars_depth[var] = depth
                 if var == 'S' and new_program.validate():
                     return new_program.code
