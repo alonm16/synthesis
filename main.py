@@ -28,7 +28,7 @@ class Program:
 
 
 class Synthesizer:
-    def __init__(self, grammar, spec, depth_limit=5, time_limit=30):
+    def __init__(self, grammar, spec, depth_limit=5, time_limit=10): #TODO change timelimit
         self.spec = spec
         self.grammar = grammar
         self.vars_depth = {}
@@ -43,6 +43,7 @@ class Synthesizer:
         for symbol in rule:
             iteration_programs = []
             cur_len = len(new_programs)
+
             if symbol.isupper():
                 for i in range(cur_len):
                     iteration_programs += [Program(new_programs[i].code + " " + old_program.code,
@@ -69,6 +70,8 @@ class Synthesizer:
 
         for var in new_programs.keys(): #Todo: check if only compare programs from same var
             for new_program in new_programs[var]:
+                if time.time() - self.time > self.time_limit:
+                    raise TimeoutError
                 if new_program.depth < depth-1:
                     continue
                 new_program.calc()
@@ -110,10 +113,15 @@ class Synthesizer:
     def bottom_up(self):
         derivation_rules, program = self.parse_grammar()
         depth = 1
+        previous_len = sum(len(self.P[var]) for var in self.P.keys())
+        new_len = previous_len
         while not program and depth < self.depth_limit:
             self.time = time.time()
-            previous_len = sum(len(self.P[var]) for var in self.P.keys())
-            program = self.grow(derivation_rules, depth)
+            previous_len = new_len
+            try:
+                program = self.grow(derivation_rules, depth)
+            except TimeoutError:
+                return 'no program under time limitations'
             new_len = sum(len(self.P[var]) for var in self.P.keys())
             if previous_len == new_len:
                 return 'no program'
@@ -123,5 +131,5 @@ class Synthesizer:
 
 if __name__ == "__main__":
     grammer = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )", "N ::= 0", "N ::= 10"]
-    spac = [(0, 10), (2, 30), (3, 97), (4, 274)]
+    spac = [(0, 100), (2, 300), (3, 970), (4, 2740)]
     print(Synthesizer(grammer, spac).bottom_up())
