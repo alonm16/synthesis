@@ -10,6 +10,12 @@ class Program:
         Program.spec = spec
 
     def __init__(self, code, depth=0, calculate=False):
+        """
+
+        :param code:
+        :param depth:
+        :param calculate:
+        """
         self.valid = True
         if calculate:
             try:
@@ -20,23 +26,28 @@ class Program:
         self.depth = depth
 
     def calc(self):
+        """
+
+        :return:
+        """
         try:
             self.outputs = []
             for (x, _) in Program.spec:
                 self.outputs += [eval(self.code)]
+            return str(self.outputs)
         except:
             self.valid = False
 
     def is_solving(self):
+        """
+
+        :return:
+        """
         return all(o1 == o2 for (o1, (_, o2)) in zip(self.outputs, Program.spec))
-
-    def get_outputs_string(self):
-        return str(self.outputs)
-
 
 
 class Synthesizer:
-    def __init__(self, grammar, spec, depth_limit=5, time_limit=100): #TODO change timelimit
+    def __init__(self, grammar, spec, depth_limit=5, time_limit=100):
         self.spec = spec
         self.grammar = grammar
         self.vars_depth = {}
@@ -48,6 +59,11 @@ class Synthesizer:
         Program.set_spec(spec)
 
     def create_programs(self, rule):
+        """
+
+        :param rule:
+        :return:
+        """
         new_programs = [Program("")]
         for symbol in rule:
             iteration_programs = []
@@ -64,10 +80,21 @@ class Synthesizer:
         return new_programs
 
     def check_depth(self, non_terminals, depth):
+        """
+
+        :param non_terminals:
+        :param depth:
+        :return:
+        """
         return any(self.vars_depth[non_terminal] == depth-1 for non_terminal in non_terminals)
 
-    """iterating other all the derivation rules and if a rule can be applied a new program is created"""
     def grow(self, derivation_rules, depth):
+        """
+        iterating other all the derivation rules and if a rule can be applied a new program is created
+        :param derivation_rules:
+        :param depth:
+        :return:
+        """
         keys = self.P.keys()
         new_programs = {}
         for var in derivation_rules:
@@ -83,30 +110,22 @@ class Synthesizer:
                     raise TimeoutError
                 if new_program.depth < depth-1:
                     continue
-                new_program.calc()
-
-                if not new_program.valid:
+                curr_outputs = new_program.calc()
+                if not new_program.valid or curr_outputs in self.seen_outputs[var]:
                     continue
-                if var not in self.seen_outputs.keys():
-                    self.seen_outputs[var] = set()
-                curr_outputs = new_program.get_outputs_string()
-                if curr_outputs in self.seen_outputs[var]:
-                    continue
-                if ' std_reverse(  std_reverse( x ) )' == new_program.code:
-                    print(new_program.code)
-                if var not in self.P.keys():
-                    self.P[var] = []
                 new_program.depth = depth
                 self.P[var] += [new_program]
                 self.seen_outputs[var].add(curr_outputs)
                 self.vars_depth[var] = depth
                 if var == 'S' and new_program.is_solving():
                     return new_program.code
-        return None
 
-    """creating terminal rules and all derivation rules as a dictionary of the form: Var -> list of rules derived by the var
-        ,not adding rules of terminals"""
     def parse_grammar(self):
+        """
+        creating terminal rules and all derivation rules as a dictionary of the form: Var -> list of rules derived by the var
+        ,not adding rules of terminals
+        :return:
+        """
         derivation_rules = {}
         program = None
         for derivation_rule in self.grammar:
@@ -114,6 +133,8 @@ class Synthesizer:
             left = left.strip()
             right = right.split()
             self.vars_depth[left] = 0
+            if left not in derivation_rules.keys():
+                derivation_rules[left], self.P[left], self.seen_outputs[left] = [], [], set()
             if len(right) == 1 and not (right[0]).isupper():
                 new_prog = Program(''.join(right), calculate=True)
                 if not new_prog.valid:
@@ -121,19 +142,17 @@ class Synthesizer:
                 if left == 'S' and new_prog.is_solving():
                     program = new_prog
                     break
-                if left not in self.P.keys():
-                    self.P[left] = []
                 self.P[left] += [new_prog]
-                if left not in self.seen_outputs.keys():
-                    self.seen_outputs[left] = set()
-                self.seen_outputs[left].add(new_prog.get_outputs_string())
+                self.seen_outputs[left].add(str(new_prog.outputs))
                 continue
-            if left not in derivation_rules.keys():
-                derivation_rules[left] = []
             derivation_rules[left] += [(right, [symbol for symbol in right if symbol.isupper()])]
         return derivation_rules, program
 
     def bottom_up(self):
+        """
+
+        :return:
+        """
         derivation_rules, program = self.parse_grammar()
         depth = 1
         previous_len = sum(len(self.P[var]) for var in self.P.keys())
@@ -149,16 +168,16 @@ class Synthesizer:
             if previous_len == new_len:
                 return 'no program'
             depth += 1
+
         if not program:
             return 'no program under depth limitations'
         return program
 
 
 if __name__ == "__main__":
-    grammer = ["S ::= x", "S ::= []", "S ::= [ INT ]", "S ::= S [ INT ]", "S ::= S [: INT ]", "INT ::= std_find ( S , INT )",
-            "S ::= std_reverse( S )",  "S ::= std_find ( S , INT )", "INT ::= 0"]
+    grammer = ["S ::= True if x < NUM else False", "NUM ::= 0", "NUM ::= 1", "NUM ::= NUM + NUM","EXP ::= EXP [ NUM ]", "NUM ::= len( EXP )", "EXP ::= x", "BOOL ::= NUM > NUM"]
 
-    spac = [([3, 2, 1], [3, 2]), ([2], []), ([3, 0, 2], [3, 0]), ([2, 3, 2, 3], [2, 3, 2])]
+    spac = [(0, True), (1, True), (2, False), (3, False)]
     s = time.time()
     print(Synthesizer(grammer, spac).bottom_up())
     print(time.time()-s)
