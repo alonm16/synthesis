@@ -89,8 +89,7 @@ class Synthesizer:
                  iterations from one of the non-terminals of the rule
                  False - else
         """
-        return any(self.vars_depth[non_terminal] == depth-1 for non_terminal in non_terminals) \
-            or (depth == 1 and non_terminals == [])
+        return any(self.vars_depth[non_terminal] == depth-1 for non_terminal in non_terminals)
 
     def grow(self, derivation_rules, depth):
         """
@@ -138,8 +137,8 @@ class Synthesizer:
             self.vars_depth[left] = 0
             if left not in derivation_rules.keys():
                 derivation_rules[left], self.P[left], self.seen_outputs[left] = [], [], set()
-            if len(right) == 1 and not (right[0]).isupper():
-                new_prog = Program(''.join(right), calculate=True)
+            if all(not symbol.isupper() for symbol in right):
+                new_prog = Program(' '.join(right), calculate=True)
                 if not new_prog.valid:
                     continue
                 if left == 'S' and new_prog.is_solving():
@@ -189,6 +188,6 @@ if __name__ == "__main__":
     spec2 = [([0,0,0,0], [0,0,0,0]), ([1,4,2,5],[1,16,4,25]), ([3,2,2,7],[9,4,4,49])]
     spec3 = [(0, 20), (2, 30), (3, 50), (4, 88)]
     s = time.time()
-    print(Synthesizer(grammar, spec2).bottom_up())
+    print(Synthesizer(grammar_arith, spec3).bottom_up())
     print(time.time()-s)
 
