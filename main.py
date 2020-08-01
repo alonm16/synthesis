@@ -17,8 +17,8 @@ class Program:
         self.code = code
         if calculate:
             try:
-                if self.is_lambda() and Program.lambda_instances:
-                    self.lambda_outputs = [eval(code) for y in Program.lambda_instances]
+                if self.is_lambda():
+                    self.lambda_outputs = [eval('(' + self.code + ')' + '(z)') for z in Program.lambda_instances]
                 else:
                     self.outputs = [eval(code) for (x, _) in Program.spec]
             except:
@@ -26,7 +26,7 @@ class Program:
         self.depth = depth
 
     def is_lambda(self):
-        return self.code.strip().startswith('lambda')
+        return Program.lambda_instances and self.code.strip().startswith('lambda')
 
     def calc(self):
         """
@@ -34,9 +34,10 @@ class Program:
         :return: list of outputs as a string
         """
         try:
-    
-            self.outputs = [eval(self.code) for (x, _) in Program.spec]
-            return str(self.outputs)
+            if self.is_lambda():
+                self.lambda_outputs = [eval('(' + self.code + ')' + '(z)') for z in Program.lambda_instances]
+            else:
+                self.outputs = [eval(self.code) for (x, _) in Program.spec]
         except:
             self.valid = False
 
@@ -55,11 +56,24 @@ class Synthesizer:
         self.vars_depth = {}
         self.P = {}
         self.seen_outputs = {}
+        self.seen_lambda_outputs = {}
         self.depth_limit = depth_limit
         self.time_limit = time_limit
         self.time = None
         Program.lambda_instances = lambda_instances
         Program.spec = spec
+
+    def add_to_outputs(self, var, program):
+        if program.is_lambda():
+            self.seen_lambda_outputs[var].add(str(program.lambda_outputs))
+        else:
+            self.seen_outputs[var].add(str(program.outputs))
+
+    def is_equivalent(self, var, program):
+        if program.is_lambda():
+            return str(program.lambda_outputs) in self.seen_lambda_outputs[var]
+        else:
+            return str(program.outputs) in self.seen_outputs[var]
 
     def create_programs(self, rule):
         """
@@ -116,12 +130,12 @@ class Synthesizer:
                     raise TimeoutError
                 if new_program.depth < depth-1:
                     continue
-                curr_outputs = new_program.calc()
-                if not new_program.valid or curr_outputs in self.seen_outputs[var]:
+                new_program.calc()
+                if not new_program.valid or self.is_equivalent(var, new_program):
                     continue
                 new_program.depth = depth
                 self.P[var] += [new_program]
-                self.seen_outputs[var].add(curr_outputs)
+                self.add_to_outputs(var, new_program)
                 self.vars_depth[var] = depth
                 if var == 'S' and new_program.is_solving():
                     return new_program.code
@@ -139,7 +153,7 @@ class Synthesizer:
             right = right.split()
             self.vars_depth[left] = 0
             if left not in derivation_rules.keys():
-                derivation_rules[left], self.P[left], self.seen_outputs[left] = [], [], set()
+                derivation_rules[left], self.P[left], self.seen_outputs[left], self.seen_lambda_outputs[left] = [], [], set(), set()
             if all(not symbol.isupper() for symbol in right):
                 new_prog = Program(' '.join(right), calculate=True)
                 if not new_prog.valid:
@@ -147,7 +161,7 @@ class Synthesizer:
                 if left == 'S' and new_prog.is_solving():
                     return derivation_rules, new_prog
                 self.P[left] += [new_prog]
-                self.seen_outputs[left].add(str(new_prog.outputs))
+                self.add_to_outputs(left, new_prog)
                 continue
             derivation_rules[left] += [(right, [symbol for symbol in right if symbol.isupper()])]
         return derivation_rules, None
@@ -191,5 +205,5 @@ if __name__ == "__main__":
     spec2 = [([0,0,0,0], [0,0,0,0]), ([1,4,2,5],[1,16,4,25]), ([3,2,2,7],[9,4,4,49])]
     spec3 = [(0, 20), (2, 30), (3, 50), (4, 88)]
     s = time.time()
-    print(Synthesizer(grammar, spec2).bottom_up())
+    print(Synthesizer(grammar_arith, spec3, lambda_instances=[1,2,3]).bottom_up())
     print(time.time()-s)
