@@ -17,18 +17,6 @@ class Program:
     def calc(self):
         self.outputs = [eval(self.code) for (x, _) in Program.spec]
 
-    """"  def compare(self, old_programs):
-        for old_program in old_programs:
-            if all(o1 == o2 for (o1, o2) in zip(self.outputs, old_program.outputs)):
-                return True
-        return False
-    """
-    def compare(self, seen_outputs : set):
-        if self.get_outputs_string() in seen_outputs:
-            return True
-        else:
-            return False
-
     def validate(self):
         return all(o1 == o2 for (o1, (i, o2)) in zip(self.outputs, Program.spec))
 
@@ -88,13 +76,13 @@ class Synthesizer:
                 new_program.calc()
                 if var not in self.seen_outputs.keys():
                     self.seen_outputs[var] = set()
-                if new_program.compare(self.seen_outputs[var]):
+                curr_outputs = new_program.get_outputs_string()
+                if curr_outputs in self.seen_outputs[var]:
                     continue
                 if var not in self.P.keys():
                     self.P[var] = []
                 new_program.depth = depth
                 self.P[var] += [new_program]
-                curr_outputs = new_program.get_outputs_string()
                 self.seen_outputs[var].add(curr_outputs)
                 self.vars_depth[var] = depth
                 if var == 'S' and new_program.validate():
@@ -145,6 +133,8 @@ class Synthesizer:
 
 
 if __name__ == "__main__":
-    grammer = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )", "N ::= 0", "N ::= 10"]
+    grammer = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S - S )", "S ::= ( S * S )", "N ::= 0", "N ::= 10"]
     spac = [(0, 100), (2, 300), (3, 970), (4, 2740)]
+    s = time.time()
     print(Synthesizer(grammer, spac).bottom_up())
+    print(time.time()-s)
