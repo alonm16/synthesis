@@ -11,10 +11,10 @@ class Program:
 
     def __init__(self, code, depth=0, calculate=False):
         """
-
-        :param code:
-        :param depth:
-        :param calculate:
+        create new program
+        :param code: code of the program
+        :param depth: number of current iteration
+        :param calculate: if True calculate the outputs of the program (else the code of the program is not finished)
         """
         self.valid = True
         if calculate:
@@ -27,8 +27,8 @@ class Program:
 
     def calc(self):
         """
-
-        :return:
+        calculate the outputs of the program from the input in the specifications
+        :return: list of outputs as a string
         """
         try:
             self.outputs = []
@@ -40,8 +40,8 @@ class Program:
 
     def is_solving(self):
         """
-
-        :return:
+        check whether the program satisfies the specifications
+        :return: True if it is else False
         """
         return all(o1 == o2 for (o1, (_, o2)) in zip(self.outputs, Program.spec))
 
@@ -60,9 +60,9 @@ class Synthesizer:
 
     def create_programs(self, rule):
         """
-
-        :param rule:
-        :return:
+        creating new programs from a derivation rule
+        :param rule: derivation rule
+        :return: new programs before pruning
         """
         new_programs = [Program("")]
         for symbol in rule:
@@ -82,19 +82,23 @@ class Synthesizer:
 
     def check_depth(self, non_terminals, depth):
         """
-
-        :param non_terminals:
-        :param depth:
-        :return:
+        optimization for checking if a new program can be created
+        :param non_terminals: non-terminals of the current rule
+        :param depth: number of current iteration
+        :return: True - if a program was created in the last
+                 iterations from one of the non-terminals of the rule
+                 False - else
         """
-        return non_terminals == [] or any(self.vars_depth[non_terminal] == depth-1 for non_terminal in non_terminals)
+        return any(self.vars_depth[non_terminal] == depth-1 for non_terminal in non_terminals) \
+            or (depth == 1 and non_terminals == [])
 
     def grow(self, derivation_rules, depth):
         """
-        iterating other all the derivation rules and if a rule can be applied a new program is created
-        :param derivation_rules:
-        :param depth:
-        :return:
+        iterating other all the derivation rules and if a rule can be applied a function calling. Afterwards perform
+        pruning out of the new programs
+        :param derivation_rules: derivation rules of the grammar
+        :param depth: number of current iteration
+        :return: program that satisfies the specifications if exists else None
         """
         new_programs = {}
         for var in derivation_rules:
@@ -122,12 +126,11 @@ class Synthesizer:
 
     def parse_grammar(self):
         """
-        creating terminal rules and all derivation rules as a dictionary of the form: Var -> list of rules derived by the var
-        ,not adding rules of terminals
+        creating derivation rules of the grammar as a dictionary in the form of: Var -> (list of rules derived by the var)
+        ,without adding rules of terminals. Creating programs out of terminal rules
         :return:
         """
         derivation_rules = {}
-        program = None
         for derivation_rule in self.grammar:
             left, right = derivation_rule.split('::=')
             left = left.strip()
@@ -140,18 +143,21 @@ class Synthesizer:
                 if not new_prog.valid:
                     continue
                 if left == 'S' and new_prog.is_solving():
-                    program = new_prog
-                    break
+                    return derivation_rules, new_prog
                 self.P[left] += [new_prog]
                 self.seen_outputs[left].add(str(new_prog.outputs))
                 continue
             derivation_rules[left] += [(right, [symbol for symbol in right if symbol.isupper()])]
-        return derivation_rules, program
+        return derivation_rules, None
 
     def bottom_up(self):
         """
-
-        :return:
+        main function, running a loop which expands the number of programs each iterations until a program is found
+        or certain conditions are met as specified below
+        :return: program that satisfies the specifications - if exists
+                'no program under time limitations' - if time passed the limit
+                'no program' - if the number of programs didn't change between iterations
+                'no program under depth limitations' - if number of iterations passed the limit
         """
         derivation_rules, program = self.parse_grammar()
         depth = 1
@@ -183,6 +189,6 @@ if __name__ == "__main__":
     spec2 = [([0,0,0,0], [0,0,0,0]), ([1,4,2,5],[1,16,4,25]), ([3,2,2,7],[9,4,4,49])]
     spec3 = [(0, 20), (2, 30), (3, 50), (4, 88)]
     s = time.time()
-    print(Synthesizer(grammar_arith, spec3).bottom_up())
+    print(Synthesizer(grammar, spec2).bottom_up())
     print(time.time()-s)
 
