@@ -1,4 +1,5 @@
 import time
+from funcs import *
 
 
 class Program:
@@ -8,20 +9,30 @@ class Program:
     def set_spec(spec):
         Program.spec = spec
 
-    def __init__(self, code, depth=0, calculate=False, ):
+    def __init__(self, code, depth=0, calculate=False):
+        self.valid = True
         if calculate:
-            self.outputs = [eval(code) for (x, _) in Program.spec]
+            try:
+                self.outputs = [eval(code) for (x, _) in Program.spec]
+            except:
+                self.valid = False
         self.code = code
         self.depth = depth
 
     def calc(self):
-        self.outputs = [eval(self.code) for (x, _) in Program.spec]
+        try:
+            self.outputs = []
+            for (x, _) in Program.spec:
+                self.outputs += [eval(self.code)]
+        except:
+            self.valid = False
 
-    def validate(self):
-        return all(o1 == o2 for (o1, (i, o2)) in zip(self.outputs, Program.spec))
+    def is_solving(self):
+        return all(o1 == o2 for (o1, (_, o2)) in zip(self.outputs, Program.spec))
 
     def get_outputs_string(self):
         return str(self.outputs)
+
 
 
 class Synthesizer:
@@ -35,7 +46,6 @@ class Synthesizer:
         self.time_limit = time_limit
         self.time = None
         Program.set_spec(spec)
-
 
     def create_programs(self, rule):
         new_programs = [Program("")]
@@ -74,18 +84,23 @@ class Synthesizer:
                 if new_program.depth < depth-1:
                     continue
                 new_program.calc()
+
+                if not new_program.valid:
+                    continue
                 if var not in self.seen_outputs.keys():
                     self.seen_outputs[var] = set()
                 curr_outputs = new_program.get_outputs_string()
                 if curr_outputs in self.seen_outputs[var]:
                     continue
+                if ' std_reverse(  std_reverse( x ) )' == new_program.code:
+                    print(new_program.code)
                 if var not in self.P.keys():
                     self.P[var] = []
                 new_program.depth = depth
                 self.P[var] += [new_program]
                 self.seen_outputs[var].add(curr_outputs)
                 self.vars_depth[var] = depth
-                if var == 'S' and new_program.validate():
+                if var == 'S' and new_program.is_solving():
                     return new_program.code
         return None
 
@@ -101,7 +116,9 @@ class Synthesizer:
             self.vars_depth[left] = 0
             if len(right) == 1 and not (right[0]).isupper():
                 new_prog = Program(''.join(right), calculate=True)
-                if new_prog.validate():
+                if not new_prog.valid:
+                    continue
+                if left == 'S' and new_prog.is_solving():
                     program = new_prog
                     break
                 if left not in self.P.keys():
@@ -127,14 +144,19 @@ class Synthesizer:
                 return 'no program under time limitations'
             new_len = sum(len(self.P[var]) for var in self.P.keys())
             if previous_len == new_len:
+                print([prog.code for prog in self.P['S']])
                 return 'no program'
             depth += 1
+        if not program:
+            return 'no program under depth limitations'
         return program
 
 
 if __name__ == "__main__":
-    grammer = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S - S )", "S ::= ( S * S )", "N ::= 0", "N ::= 10"]
-    spac = [(0, 100), (2, 300), (3, 970), (4, 2740)]
+    grammer = ["S ::= x", "S ::= []", "S ::= [ INT ]", "S ::= S [ INT ]", "S ::= S [: INT ]", "INT ::= std_find ( S , INT )",
+            "S ::= std_reverse( S )",  "S ::= std_find ( S , INT )", "INT ::= 0"]
+
+    spac = [([3, 2, 1], [3, 2]), ([2], []), ([3, 0, 2], [3, 0]), ([2, 3, 2, 3], [2, 3, 2])]
     s = time.time()
     print(Synthesizer(grammer, spac).bottom_up())
     print(time.time()-s)
