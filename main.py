@@ -4,10 +4,7 @@ from funcs import *
 
 class Program:
     spec = None
-
-    @staticmethod
-    def set_spec(spec):
-        Program.spec = spec
+    lambda_instances = None
 
     def __init__(self, code, depth=0, calculate=False):
         """
@@ -17,13 +14,19 @@ class Program:
         :param calculate: if True calculate the outputs of the program (else the code of the program is not finished)
         """
         self.valid = True
+        self.code = code
         if calculate:
             try:
-                self.outputs = [eval(code) for (x, _) in Program.spec]
+                if self.is_lambda() and Program.lambda_instances:
+                    self.lambda_outputs = [eval(code) for y in Program.lambda_instances]
+                else:
+                    self.outputs = [eval(code) for (x, _) in Program.spec]
             except:
                 self.valid = False
-        self.code = code
         self.depth = depth
+
+    def is_lambda(self):
+        return self.code.strip().startswith('lambda')
 
     def calc(self):
         """
@@ -31,9 +34,8 @@ class Program:
         :return: list of outputs as a string
         """
         try:
-            self.outputs = []
-            for (x, _) in Program.spec:
-                self.outputs += [eval(self.code)]
+    
+            self.outputs = [eval(self.code) for (x, _) in Program.spec]
             return str(self.outputs)
         except:
             self.valid = False
@@ -47,7 +49,7 @@ class Program:
 
 
 class Synthesizer:
-    def __init__(self, grammar, spec, depth_limit=5, time_limit=100):
+    def __init__(self, grammar, spec, depth_limit=5, time_limit=100, lambda_instances=None):
         self.spec = spec
         self.grammar = grammar
         self.vars_depth = {}
@@ -56,7 +58,8 @@ class Synthesizer:
         self.depth_limit = depth_limit
         self.time_limit = time_limit
         self.time = None
-        Program.set_spec(spec)
+        Program.lambda_instances = lambda_instances
+        Program.spec = spec
 
     def create_programs(self, rule):
         """
@@ -190,6 +193,3 @@ if __name__ == "__main__":
     s = time.time()
     print(Synthesizer(grammar, spec2).bottom_up())
     print(time.time()-s)
-
-
-
