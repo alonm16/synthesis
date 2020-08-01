@@ -6,23 +6,14 @@ class Program:
     spec = None
     lambda_instances = None
 
-    def __init__(self, code, depth=0, calculate=False):
+    def __init__(self, code, depth=0):
         """
         create new program
         :param code: code of the program
         :param depth: number of current iteration
         :param calculate: if True calculate the outputs of the program (else the code of the program is not finished)
         """
-        self.valid = True
         self.code = code
-        if calculate:
-            try:
-                if self.is_lambda():
-                    self.lambda_outputs = [eval('(' + self.code + ')' + '(z)') for z in Program.lambda_instances]
-                else:
-                    self.outputs = [eval(code) for (x, _) in Program.spec]
-            except:
-                self.valid = False
         self.depth = depth
 
     def is_lambda(self):
@@ -31,7 +22,7 @@ class Program:
     def is_valid(self):
         """
         calculate the outputs of the program from the input in the specifications
-        :return: list of outputs as a string
+        :return: True if the calculation didn't yield errors
         """
         try:
             if self.is_lambda():
@@ -39,8 +30,8 @@ class Program:
             else:
                 self.outputs = [eval(self.code) for (x, _) in Program.spec]
         except:
-            self.valid = False
-        return self.valid
+            return False
+        return True
 
     def is_solving(self):
         """
@@ -153,8 +144,8 @@ class Synthesizer:
             if left not in derivation_rules.keys():
                 derivation_rules[left], self.P[left], self.seen_outputs[left], self.seen_lambda_outputs[left] = [], [], set(), set()
             if all(not symbol.isupper() for symbol in right):
-                new_prog = Program(' '.join(right), calculate=True)
-                if not new_prog.valid:
+                new_prog = Program(' '.join(right))
+                if not new_prog.is_valid():
                     continue
                 if left == 'S' and new_prog.is_solving():
                     return derivation_rules, new_prog
@@ -201,7 +192,7 @@ if __name__ == "__main__":
                      "N ::= 10"]
     spec1 = [([0,2,1,4], [0,2,1]), ([1,0], [1,0]), ([4,3,5,4], []), ([2,1,4], [2,1])]
     spec2 = [([0,0,0,0], [0,0,0,0]), ([1,4,2,5],[1,16,4,25]), ([3,2,2,7],[9,4,4,49])]
-    spec3 = [(0, 20), (2, 30), (3, 50), (4, 88)]
+    spec3 = [(0, 100), (2, 300), (3, 970), (4, 2740)]
     s = time.time()
     print(Synthesizer(grammar_arith, spec3, lambda_instances=[1,2,3]).bottom_up())
     print(time.time()-s)
