@@ -77,6 +77,7 @@ class Synthesizer:
             else:
                 for i in range(cur_len):
                     new_programs[i].code += " " + symbol
+
         return new_programs
 
     def check_depth(self, non_terminals, depth):
@@ -86,7 +87,7 @@ class Synthesizer:
         :param depth:
         :return:
         """
-        return any(self.vars_depth[non_terminal] == depth-1 for non_terminal in non_terminals)
+        return non_terminals == [] or any(self.vars_depth[non_terminal] == depth-1 for non_terminal in non_terminals)
 
     def grow(self, derivation_rules, depth):
         """
@@ -95,11 +96,10 @@ class Synthesizer:
         :param depth:
         :return:
         """
-        keys = self.P.keys()
         new_programs = {}
         for var in derivation_rules:
             for single_rule in derivation_rules[var]:
-                if all(x in keys for x in single_rule[1]) and self.check_depth(single_rule[1], depth):
+                if all(len(self.P[x]) > 0 for x in single_rule[1]) and self.check_depth(single_rule[1], depth):
                     if var not in new_programs.keys():
                         new_programs[var] = []
                     new_programs[var] += self.create_programs(single_rule[0])
@@ -175,9 +175,14 @@ class Synthesizer:
 
 
 if __name__ == "__main__":
-    grammer = ["S ::= True if x < NUM else False", "NUM ::= 0", "NUM ::= 1", "NUM ::= NUM + NUM","EXP ::= EXP [ NUM ]", "NUM ::= len( EXP )", "EXP ::= x", "BOOL ::= NUM > NUM"]
-
-    spac = [(0, True), (1, True), (2, False), (3, False)]
+    grammar = ["S ::= std_filter ( FILTARG , L )", "S ::= std_map ( MAPTARG , L )", "L ::= x",
+               "FILTARG ::= lambda y : y <= NUM", "MAPTARG ::= lambda y : y * y", "NUM ::= 1", "NUM ::= ( NUM + NUM )"]
+    grammar_arith = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )", "N ::= 0",
+                     "N ::= 10"]
+    spec1 = [([0,2,1,4], [0,2,1]), ([1,0], [1,0]), ([4,3,5,4], []), ([2,1,4], [2,1])]
+    spec2 = [([0,0,0,0], [0,0,0,0]), ([1,4,2,5],[1,16,4,25]), ([3,2,2,7],[9,4,4,49])]
+    spec3 = [(0, 20), (2, 30), (3, 50), (4, 88)]
     s = time.time()
-    print(Synthesizer(grammer, spac).bottom_up())
+    print(Synthesizer(grammar_arith, spec3).bottom_up())
     print(time.time()-s)
+
