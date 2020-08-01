@@ -124,6 +124,9 @@ class Synthesizer:
                 if left not in self.P.keys():
                     self.P[left] = []
                 self.P[left] += [new_prog]
+                if left not in self.seen_outputs.keys():
+                    self.seen_outputs[left] = set()
+                self.seen_outputs[left].add(new_prog.get_outputs_string())
                 continue
             if left not in derivation_rules.keys():
                 derivation_rules[left] = []
@@ -144,7 +147,6 @@ class Synthesizer:
                 return 'no program under time limitations'
             new_len = sum(len(self.P[var]) for var in self.P.keys())
             if previous_len == new_len:
-                print([prog.code for prog in self.P['S']])
                 return 'no program'
             depth += 1
         if not program:
