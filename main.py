@@ -188,6 +188,8 @@ if __name__ == "__main__":
     spec2 = [([0,0,0,0], [0,0,0,0]), ([1,4,2,5],[1,16,4,25]), ([3,2,2,7],[9,4,4,49])]
     spec3 = [(0, 20), (2, 30), (3, 50), (4, 88)]
     s = time.time()
-    print(Synthesizer(grammar_arith, spec3).bottom_up())
+    print(Synthesizer(grammar, spec2).bottom_up())
     print(time.time()-s)
+
+
 
