@@ -28,7 +28,7 @@ class Program:
     def is_lambda(self):
         return Program.lambda_instances and self.code.strip().startswith('lambda')
 
-    def calc(self):
+    def is_valid(self):
         """
         calculate the outputs of the program from the input in the specifications
         :return: list of outputs as a string
@@ -40,6 +40,7 @@ class Program:
                 self.outputs = [eval(self.code) for (x, _) in Program.spec]
         except:
             self.valid = False
+        return self.valid
 
     def is_solving(self):
         """
@@ -128,10 +129,7 @@ class Synthesizer:
             for new_program in new_programs[var]:
                 if time.time() - self.time > self.time_limit:
                     raise TimeoutError
-                if new_program.depth < depth-1:
-                    continue
-                new_program.calc()
-                if not new_program.valid or self.is_equivalent(var, new_program):
+                if new_program.depth < depth-1 or not new_program.is_valid() or self.is_equivalent(var, new_program):
                     continue
                 new_program.depth = depth
                 self.P[var] += [new_program]
