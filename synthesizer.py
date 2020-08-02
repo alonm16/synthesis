@@ -1,6 +1,6 @@
 import time
 from funcs import *
-
+from random import randint
 
 class Program:
     spec = None
@@ -11,7 +11,6 @@ class Program:
         create new program
         :param code: code of the program
         :param depth: number of current iteration
-        :param calculate: if True calculate the outputs of the program (else the code of the program is not finished)
         """
         self.code = code
         self.depth = depth
@@ -19,7 +18,7 @@ class Program:
     def is_lambda(self):
         return Program.lambda_instances and self.code.strip().startswith('lambda')
 
-    def is_valid(self):
+    def calculate_outputs(self):
         """
         calculate the outputs of the program from the input in the specifications
         :return: True if the calculation didn't yield errors
@@ -42,8 +41,10 @@ class Program:
 
 
 class Synthesizer:
-    def __init__(self, grammar, spec, depth_limit=5, time_limit=100, lambda_instances=None):
+    def __init__(self, grammar, spec, depth_limit=5, time_limit=100, lambda_instances=None, spec_with_symbolic_ex = None):
         self.spec = spec
+        if spec_with_symbolic_ex:
+            self.add_to_spec(spec_with_symbolic_ex)
         self.grammar = grammar
         self.vars_depth = {}
         self.P = {}
@@ -52,7 +53,8 @@ class Synthesizer:
         self.depth_limit = depth_limit
         self.time_limit = time_limit
         self.time = None
-        Program.lambda_instances = lambda_instances
+        if lambda_instances:
+            Program.lambda_instances = [lambda_instances() for _ in range(30)]
         Program.spec = spec
 
     def add_to_outputs(self, var, program):
@@ -66,6 +68,19 @@ class Synthesizer:
             return str(program.lambda_outputs) in self.seen_lambda_outputs[var]
         else:
             return str(program.outputs) in self.seen_outputs[var]
+
+    def add_to_spec(self, spec_with_symbolic_example):
+        a_values = [randint(0,100) for _ in range(20)]
+        b_values = [randint(0,100) for _ in range(10)]
+        for (input,output) in spec_with_symbolic_example:
+            if 'a' in input and 'b' in input:
+                for a_value in a_values[:10]:
+                    for b_value in b_values:
+                        self.spec += [(eval(input.replace('a',str(a_value)).replace('b',str(b_value))),
+                                       eval(output.replace('a', str(a_value)).replace('b',str(b_value))))]
+            else:
+                for a_value in a_values:
+                    self.spec += [(eval(input.replace('a', str(a_value))), eval(output.replace('a', str(a_value))))]
 
     def create_programs(self, rule):
         """
@@ -120,7 +135,7 @@ class Synthesizer:
             for new_program in new_programs[var]:
                 if time.time() - self.time > self.time_limit:
                     raise TimeoutError
-                if new_program.depth < depth-1 or not new_program.is_valid() or self.is_equivalent(var, new_program):
+                if new_program.depth < depth-1 or not new_program.calculate_outputs() or self.is_equivalent(var, new_program):
                     continue
                 new_program.depth = depth
                 self.P[var] += [new_program]
@@ -145,7 +160,7 @@ class Synthesizer:
                 derivation_rules[left], self.P[left], self.seen_outputs[left], self.seen_lambda_outputs[left] = [], [], set(), set()
             if all(not symbol.isupper() for symbol in right):
                 new_prog = Program(' '.join(right))
-                if not new_prog.is_valid():
+                if not new_prog.calculate_outputs():
                     continue
                 if left == 'S' and new_prog.is_solving():
                     return derivation_rules, new_prog
@@ -183,16 +198,3 @@ class Synthesizer:
         if not program:
             return 'no program under depth limitations'
         return program
-
-
-if __name__ == "__main__":
-    grammar = ["S ::= std_filter ( FILTARG , L )", "S ::= std_map ( MAPTARG , L )", "L ::= x",
-               "FILTARG ::= lambda y : y <= NUM", "MAPTARG ::= lambda y : y * y", "NUM ::= 1", "NUM ::= ( NUM + NUM )"]
-    grammar_arith = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )", "N ::= 0",
-                     "N ::= 10"]
-    spec1 = [([0,2,1,4], [0,2,1]), ([1,0], [1,0]), ([4,3,5,4], []), ([2,1,4], [2,1])]
-    spec2 = [([0,0,0,0], [0,0,0,0]), ([1,4,2,5],[1,16,4,25]), ([3,2,2,7],[9,4,4,49])]
-    spec3 = [(0, 100), (2, 300), (3, 970), (4, 2740)]
-    s = time.time()
-    print(Synthesizer(grammar_arith, spec3, lambda_instances=[1,2,3]).bottom_up())
-    print(time.time()-s)
