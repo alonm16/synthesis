@@ -25,7 +25,7 @@ class SynthesizerTest(unittest.TestCase):
             with open("test_arith_constant_func", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'w') as f:
-            f.write(f"test_arith_constant_func, {'Found,' if self.found_sol(sol) else 'Not Found,'}"
+            f.write(f"test_arith_constant_func, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end-start}\n")
 
     def test_arith_pow_3(self):
@@ -39,7 +39,7 @@ class SynthesizerTest(unittest.TestCase):
             with open("test_arith_pow_3", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'w') as f:
-            f.write(f"test_arith_pow_3, {'Found,' if self.found_sol(sol) else 'Not Found,'}"
+            f.write(f"test_arith_pow_3, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
 
     def test_arith_mul2_minus4(self):
@@ -53,7 +53,7 @@ class SynthesizerTest(unittest.TestCase):
             with open("test_arith_mul2_minus4", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'w') as f:
-            f.write(f"test_arith_mul2_minus4, {'Found,' if self.found_sol(sol) else 'Not Found,'}"
+            f.write(f"test_arith_mul2_minus4, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
 
     def test_arith_pow2_div_by_3(self):
@@ -67,7 +67,7 @@ class SynthesizerTest(unittest.TestCase):
             with open("test_arith_pow2_div_by_3", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'w') as f:
-            f.write(f"test_arith_pow2_div_by_3, {'Found,' if self.found_sol(sol) else 'Not Found,'}"
+            f.write(f"test_arith_pow2_div_by_3, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
 
     def test_arith_2_pow_x_unrealizable(self):
@@ -81,7 +81,7 @@ class SynthesizerTest(unittest.TestCase):
             with open("test_arith_2_pow_x_unrealizable", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'w') as f:
-            f.write(f"test_arith_2_pow_x_unrealizable, {'Found,' if self.found_sol(sol) else 'Not Found,'}"
+            f.write(f"test_arith_2_pow_x_unrealizable, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
 
     def test_arith_x_plus_1_pow_2(self):
@@ -95,7 +95,7 @@ class SynthesizerTest(unittest.TestCase):
             with open("test_arith_x_plus_1_pow_2", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'w') as f:
-            f.write(f"test_arith_x_plus_1_pow_2, {'Found,' if self.found_sol(sol) else 'Not Found,'}"
+            f.write(f"test_arith_x_plus_1_pow_2, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
     arithmetic synthesize test  end"""
 
