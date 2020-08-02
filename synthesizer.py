@@ -170,7 +170,7 @@ class Synthesizer:
             derivation_rules[left] += [(right, [symbol for symbol in right if symbol.isupper()])]
         return derivation_rules, None
 
-    def bottom_up(self):
+    def find_solution(self):
         """
         main function, running a loop which expands the number of programs each iterations until a program is found
         or certain conditions are met as specified below
@@ -198,3 +198,13 @@ class Synthesizer:
         if not program:
             return 'no program under depth limitations'
         return program
+
+if __name__ == "__main__":
+    arithmetic_grammar = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )",
+                          "S ::= ( S / S )", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
+
+    s = Synthesizer(arithmetic_grammar, [(1, -2), (5, 6), (3, 2), (10, 16)])
+    start = time.time()
+    sol = s.find_solution()
+    end = time.time()
+    print(sol)
