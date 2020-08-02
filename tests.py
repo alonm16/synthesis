@@ -21,9 +21,12 @@ class SynthesizerTest(unittest.TestCase):
         sol = s.find_solution()
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_arith_constant_func", 'w') as f:
+                f.write(sol)
         with open("synthesizer_tests.csv", 'w') as f:
-            f.write(f"test_arith_constant_func, {'Found, Program =' if self.found_sol(sol) else 'Not Found,'}"
-                    f" {sol}, {end-start}\n")
+            f.write(f"test_arith_constant_func, {'Found,' if self.found_sol(sol) else 'Not Found,'}"
+                    f", {end-start}\n")
 
     def test_arith_pow_3(self):
         print("running test_arith_pow_3")
@@ -32,9 +35,12 @@ class SynthesizerTest(unittest.TestCase):
         sol = s.find_solution()
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
-        with open("synthesizer_tests.csv", 'a') as f:
-            f.write(f"test_arith_pow_3, {'Found, Program =' if self.found_sol(sol) else 'Not Found,'}"
-                    f" {sol}, {end - start}\n")
+        if SynthesizerTest.found_sol(sol):
+            with open("test_arith_pow_3", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'w') as f:
+            f.write(f"test_arith_pow_3, {'Found,' if self.found_sol(sol) else 'Not Found,'}"
+                    f", {end - start}\n")
 
     def test_arith_mul2_minus4(self):
         print("running test_arith_mul2_minus4")
@@ -43,9 +49,12 @@ class SynthesizerTest(unittest.TestCase):
         sol = s.find_solution()
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
-        with open("synthesizer_tests.csv", 'a') as f:
-            f.write(f"test_arith_mul2_minus4, {'Found, Program =' if self.found_sol(sol) else 'Not Found,'}"
-                    f" {sol}, {end - start}\n")
+        if SynthesizerTest.found_sol(sol):
+            with open("test_arith_mul2_minus4", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'w') as f:
+            f.write(f"test_arith_mul2_minus4, {'Found,' if self.found_sol(sol) else 'Not Found,'}"
+                    f", {end - start}\n")
 
     def test_arith_pow2_div_by_3(self):
         print("running test_arith_pow2_div_by_3")
@@ -54,9 +63,12 @@ class SynthesizerTest(unittest.TestCase):
         sol = s.find_solution()
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
-        with open("synthesizer_tests.csv", 'a') as f:
-            f.write(f"test_arith_pow2_div_by_3, {'Found, Program =' if self.found_sol(sol) else 'Not Found,'}"
-                    f" {sol}, {end - start}\n")
+        if SynthesizerTest.found_sol(sol):
+            with open("test_arith_pow2_div_by_3", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'w') as f:
+            f.write(f"test_arith_pow2_div_by_3, {'Found,' if self.found_sol(sol) else 'Not Found,'}"
+                    f", {end - start}\n")
 
     def test_arith_2_pow_x_unrealizable(self):
         print("running test_arith_2_pow_x_unrealizable")
@@ -65,9 +77,12 @@ class SynthesizerTest(unittest.TestCase):
         sol = s.find_solution()
         end = time.time()
         assert (not SynthesizerTest.found_sol(sol))
-        with open("synthesizer_tests.csv", 'a') as f:
-            f.write(f"test_arith_2_pow_x_unrealizable, {'Found, Program =' if self.found_sol(sol) else 'Not Found,'}"
-                    f" {sol}, {end - start}\n")
+        if SynthesizerTest.found_sol(sol):
+            with open("test_arith_2_pow_x_unrealizable", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'w') as f:
+            f.write(f"test_arith_2_pow_x_unrealizable, {'Found,' if self.found_sol(sol) else 'Not Found,'}"
+                    f", {end - start}\n")
 
     def test_arith_x_plus_1_pow_2(self):
         print("running test_arith_x_plus_1_pow_2")
@@ -76,9 +91,12 @@ class SynthesizerTest(unittest.TestCase):
         sol = s.find_solution()
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
-        with open("synthesizer_tests.csv", 'a') as f:
-            f.write(f"test_arith_x_plus_1_pow_2, {'Found, Program =' if self.found_sol(sol) else 'Not Found,'}"
-                    f" {sol}, {end - start}\n")
+        if SynthesizerTest.found_sol(sol):
+            with open("test_arith_x_plus_1_pow_2", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'w') as f:
+            f.write(f"test_arith_x_plus_1_pow_2, {'Found,' if self.found_sol(sol) else 'Not Found,'}"
+                    f", {end - start}\n")
     arithmetic synthesize test  end"""
 
 
