@@ -1,6 +1,5 @@
 test_arith_constant_func, Found, Program =  1, 0.0
-test_arith_2_pow_x_unrealizable, Found, Program = no program under time limitations, 108.61898970603943
-test_arith_mul2_minus4, Found, Program =  (  (  ( x * x ) -  ( x + x ) ) *  (  ( x + x ) /  ( x * x ) ) ), 0.7240638732910156
-test_arith_pow2_div_by_3, Found, Program =  (  ( x *  ( x * x ) ) /  ( x +  ( x + x ) ) ), 1.272620677947998
-test_arith_pow_3, Found, Program =  ( x *  ( x * x ) ), 0.0029942989349365234
-test_arith_x_plus_1_pow_2, Found, Program =  (  1 +  (  ( x + x ) +  ( x * x ) ) ), 0.043878793716430664
+test_arith_mul2_minus4, Found, Program =  (  (  ( x * x ) -  ( x + x ) ) *  (  ( x + x ) /  ( x * x ) ) ), 0.40614938735961914
+test_arith_pow2_div_by_3, Found, Program =  (  ( x *  ( x * x ) ) /  ( x +  ( x + x ) ) ), 0.7187423706054688
+test_arith_pow_3, Found, Program =  ( x *  ( x * x ) ), 0.015583992004394531
+test_arith_x_plus_1_pow_2, Found, Program =  (  1 +  (  ( x + x ) +  ( x * x ) ) ), 0.015622138977050781

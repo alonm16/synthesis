@@ -6,11 +6,14 @@ import time
 class SynthesizerTest(unittest.TestCase):
     arithmetic_grammar = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )",
                           "S ::= ( S / S )", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
-
+    string_grammar = ["C ::= 'a'", "C ::= 'b'", "C ::= 'c'", "S ::= C", "S ::= ( S + S )"
+            , "S ::= ( S * N )", "S ::= S [ N ]" , "S ::= x", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
     @staticmethod
     def found_sol(sol):
         return not sol.startswith('no program')
 
+    """arithmetic synthesize test  start
+    
     def test_aarith_constant_func(self):
         print("running test_arith_constant_func")
         s = Synthesizer(self.arithmetic_grammar, [(134, 1), (20, 1), (3, 1), (0, 1)])
@@ -61,7 +64,7 @@ class SynthesizerTest(unittest.TestCase):
         start = time.time()
         sol = s.find_solution()
         end = time.time()
-        assert (SynthesizerTest.found_sol(sol))
+        assert (not SynthesizerTest.found_sol(sol))
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_arith_2_pow_x_unrealizable, {'Found, Program =' if self.found_sol(sol) else 'Not Found,'}"
                     f" {sol}, {end - start}\n")
@@ -76,23 +79,12 @@ class SynthesizerTest(unittest.TestCase):
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_arith_x_plus_1_pow_2, {'Found, Program =' if self.found_sol(sol) else 'Not Found,'}"
                     f" {sol}, {end - start}\n")
-
+    arithmetic synthesize test  end"""
 
 
 
 if __name__ == '__main__':
-    #unittest.main()
-    arithmetic_grammar = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )",
-                          "S ::= ( S / S )", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
-    print("running test_arith_x_plus_1_pow_2")
-    s = Synthesizer(arithmetic_grammar, [(2, 9), (6, 49), (10, 121), (1, 4)])
-    start = time.time()
-    sol = s.find_solution()
-    end = time.time()
-    assert (SynthesizerTest.found_sol(sol))
-    with open("synthesizer_tests.csv", 'a') as f:
-        f.write(f"test_arith_x_plus_1_pow_2, {'Found, Program =' if SynthesizerTest.found_sol(sol) else 'Not Found,'}"
-                f" {sol}, {end - start}\n")
+    unittest.main()
 
 """
 def random_int():
