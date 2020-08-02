@@ -6,13 +6,15 @@ import time
 class SynthesizerTest(unittest.TestCase):
     arithmetic_grammar = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )",
                           "S ::= ( S / S )", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
-    string_grammar = ["C ::= 'a'", "C ::= 'b'", "C ::= 'c'", "S ::= C", "S ::= ( S + S )"
-            , "S ::= ( S * N )", "S ::= S [ N ]" , "S ::= x", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
+    string_grammar = [ "S ::= x", "S ::= ( S + S )", "S ::= ( S * N )", "S ::= S [ N ]", "S ::= std_lower ( S )",
+                       "S ::= std_upper ( S )", "S ::= CHAR", "CHAR ::= 'n'", "CHAR ::= 'm'", "CHAR ::= 'o'",
+                       "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
+
     @staticmethod
     def found_sol(sol):
         return not sol.startswith('no program')
 
-    """arithmetic synthesize test  start
+    """arithmetic synthesize test  start"""
     
     def test_aarith_constant_func(self):
         print("running test_arith_constant_func")
@@ -97,12 +99,103 @@ class SynthesizerTest(unittest.TestCase):
         with open("synthesizer_tests.csv", 'w') as f:
             f.write(f"test_arith_x_plus_1_pow_2, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
-    arithmetic synthesize test  end"""
+    """arithmetic synthesize test  end"""
+
+    """string synthesize test start"""
+    def test_string_concat(self):
+        print("running test_string_concat")
+        s = Synthesizer(self.string_grammar, [("hell", "hello"), ("br", "bro"), ("n", "no"), ("finit", "finito")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_string_concat", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_string_concat, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_string_pow_3(self):
+        print("running test_string_concat")
+        s = Synthesizer(self.string_grammar, [("hi", "hihihi"), ("love", "lovelovelove"), ("n", "nnn"), ("bla", "blablabla")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_string_pow_3", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_string_concat, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_string_second_letter_upper(self):
+        print("running test_string_second_letter_upper")
+        s = Synthesizer(self.string_grammar,[("hi", "I"), ("love", "O"), ("drunk", "R"), ("bla", "L")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_string_second_letter_upper", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_string_second_letter_upper, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                f", {end - start}\n")
+
+    def test_string_lower_upper_concat(self):
+        print("running test_string_lower_upper_concat")
+        s = Synthesizer(self.string_grammar, [("I", "iI"), ("lOvE", "loveLOVE"), ("SynThesis", "synthesisSYNTHESIS")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_string_lower_upper_concat", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_string_lower_upper_concat, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_string_last_letter_unrealizable(self):
+        print("running test_string_last_letter_unrealizable")
+        s = Synthesizer(self.string_grammar, [("I", "I"), ("lOvE", "E"), ("SynThesis", "s")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (not SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_string_last_letter_unrealizable", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_string_last_letter_unrealizable, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_string_first_letter_plus_n_plus_lower_x(self):
+        print("running test_string_first_letter_plus_n_plus_lower_x")
+        s = Synthesizer(self.string_grammar, [("noaM", "nnnoam"), ("aLOn", "analon"), ("ShlOmiT", "Snshlomit")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_string_first_letter_plus_n_plus_lower_x", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_string_first_letter_plus_n_plus_lower_x, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+    """string synthesize test end"""
 
 
 
 if __name__ == '__main__':
     unittest.main()
+
+
+
+
+
 
 """
 def random_int():

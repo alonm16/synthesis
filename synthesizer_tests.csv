@@ -1,1 +1,5 @@
-test_arith_x_plus_1_pow_2, Found,, 0.04488039016723633
+test_string_concat, Found, 0.0029914379119873047
+test_string_first_letter_plus_n_plus_lower_x, Found, 0.07153129577636719
+test_string_lower_upper_concat, Found, 0.007965087890625
+test_string_concat, Found, 0.0019948482513427734
+test_string_second_letter_upper, Found, 0.008975982666015625
