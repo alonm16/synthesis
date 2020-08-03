@@ -1,0 +1,1 @@
+ std_map (  lambda y : y **  ( 2 + 2 ) ,  std_filter (  lambda y : ( y * 1 ) <=  ( 2 + 2 ) ,  std_filter (  lambda y : y % 2 == 0 , x ) ) )
