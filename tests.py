@@ -1,6 +1,8 @@
 import unittest
 from synthesizer import Synthesizer
 import time
+from random import randint
+
 
 
 class SynthesizerTest(unittest.TestCase):
@@ -12,6 +14,11 @@ class SynthesizerTest(unittest.TestCase):
     lambda_grammar = ["S ::= std_filter ( FILTARG , L )", "S ::= std_map ( MAPTARG , L )", "L ::= x", "L ::= [ ]",
                       "L ::= [ N ]", "L ::= ( L + L )", "FILTARG ::= lambda y : y <= N", "MAPTARG ::= lambda y : y * y",
                       "N ::= 1", "N ::= ( N + N )"]
+
+    lambda_grammar2 = ["S ::= std_filter ( FILTARG , S )", "S ::= std_map ( MAPTARG , S )", "S ::= x"
+                      , "S ::= ( S + S )", "FILTARG ::= lambda y : ( y * N ) <= N",
+                       "FILTARG ::= lambda y : ( y + ( y * N ) ) <= N", "MAPTARG ::= lambda y : y * ( y ** N )",
+                       "MAPTARG ::= lambda y : y ** N", "N ::= 1", "N ::= ( N + N )"]
 
     @staticmethod
     def found_sol(sol):
@@ -194,7 +201,7 @@ class SynthesizerTest(unittest.TestCase):
                       "S ::= [ N ]", "S ::= ( S + S )", "FILTARG ::= lambda y : y <= N", "MAPTARG ::= lambda y : y * y",
                       "N ::= 1", "N ::= ( N + N )"]
 
-    """ lambda synthesis test start"""
+    """ lambda synthesis test start
 
     def test_lambda_filter_leq_3(self):
         print("running test_lambda_filter_leq_3")
@@ -239,18 +246,105 @@ class SynthesizerTest(unittest.TestCase):
                     f", {end - start}\n")
 
 
+    def test_lambda_less_5_pow5(self):
+        print("running test_lambda_less_5_pow5")
+        s = Synthesizer(self.lambda_grammar2, [([6, 3, 2], [243, 32]), ([5, 2], [32]), ([4, 5, 1], [1024, 1])])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_lambda_less_5_pow5_not_optimized", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_lambda_less_5_pow5_not_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+        s = Synthesizer(self.lambda_grammar2, [([6, 3, 2], [243, 32]), ([5, 2], [32]), ([4, 5, 1], [1024, 1])],
+                        lambda_instances=lambda: randint(1, 7))
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_lambda_less_5_pow5_optimized", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_lambda_less_5_pow5_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_lambda_less_4_concat_pow3(self):
+        print("running test_lambda_less_4_concat_pow3")
+        s = Synthesizer(self.lambda_grammar2, [([6, 3, 2], [3, 2, 216, 27, 8]), ([5, 2], [2,125,8]), ([4, 5, 1], [1, 64, 125, 1])])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_lambda_less_4_concat_pow3_not_optimized", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_lambda_less_4_concat_pow3_not_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+        s = Synthesizer(self.lambda_grammar2,  [([6, 3, 2], [3, 2, 216, 27, 8]), ([5, 2], [2,125,8]), ([4, 5, 1], [1, 64, 125, 1])],
+                        lambda_instances=lambda: randint(1, 7))
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_lambda_less_4_concat_pow3_optimized", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_lambda_less_4_concat_pow3_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+        
+     """
+    lambda_grammar2 = ["S ::= std_filter ( FILTARG , S )", "S ::= std_map ( MAPTARG , S )", "S ::= x"
+        , "S ::= ( S + S )", "FILTARG ::= lambda y : ( y * N ) <= N",
+                       "FILTARG ::= lambda y : ( y + ( y * N ) ) <= N",  "MAPTARG ::= lambda y : y ** N",
+                       "MAPTARG ::= lambda y : y * ( y ** N )", "N ::= 1",  "N ::= 2", "N ::= ( N + N )"]
+
+    def test_lambda_1_if_list_distinct_unrealizable(self):
+        print("running test_lambda_1_if_list_distinct_unrealizable")
+        s = Synthesizer(self.lambda_grammar2,
+                        [([6, 3, 2], [1, 1, 1]), ([5, 2, 5], [5, 2, 5]), ([4, 6, 1], [1, 1, 1]), ([2,4,4], [2,4,4])],
+                        time_limit=12)
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (not SynthesizerTest.found_sol(sol))
+        if not SynthesizerTest.found_sol(sol):
+            with open("test_lambda_1_if_list_distinct_unrealizable_not_optimized", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_lambda_1_if_list_distinct_unrealizable_not_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+        s = Synthesizer(self.lambda_grammar2,
+                        [([6, 3, 2], [1, 1, 1]), ([5, 2, 5], [5, 2, 5]), ([4, 6, 1], [1, 1, 1]), ([2,4,4], [2,4,4])],
+                        time_limit=12, lambda_instances=lambda: randint(1, 7))
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (not SynthesizerTest.found_sol(sol))
+        if not SynthesizerTest.found_sol(sol):
+            with open("test_lambda_1_if_list_distinct_unrealizable_optimized", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_lambda_1_if_list_distinct_unrealizable_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+
+
+
 if __name__ == '__main__':
     unittest.main()
 
 
 
-
-
-
 """
-def random_int():
-    return randint(0,10)
-
 if __name__ == "__main__":
 
     grammar = ["S ::= std_filter ( FILTARG , L )", "S ::= std_map ( MAPTARG , L )", "L ::= x",
