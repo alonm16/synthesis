@@ -1,0 +1,1 @@
+ std_map ( lambda y : y * y , x )
