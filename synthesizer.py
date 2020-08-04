@@ -142,7 +142,7 @@ class Synthesizer:
                 self.add_to_outputs(var, new_program)
                 self.vars_depth[var] = depth
                 if var == 'S' and new_program.is_solving():
-                    return new_program.code
+                    return new_program
 
     def parse_grammar(self):
         """
@@ -197,7 +197,7 @@ class Synthesizer:
 
         if not program:
             return 'no program under depth limitations'
-        return program
+        return program.code
 
 if __name__ == "__main__":
     arithmetic_grammar = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )",
