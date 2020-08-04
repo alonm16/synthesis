@@ -20,13 +20,16 @@ class SynthesizerTest(unittest.TestCase):
                        "FILTARG ::= lambda y : ( y + ( y * N ) ) <= N",  "MAPTARG ::= lambda y : y ** N",
                        "MAPTARG ::= lambda y : y * ( y ** N )", "N ::= 1",  "N ::= 2", "N ::= ( N + N )",
                        "FILTARG ::= lambda y : y % N == 0"]
-    list_grammar = ["S ::= x", "S ::= [ ]", "S ::= ( S + S )",  "N ::= 1", "N ::= ( N + N )", "S ::= S [ : N ]",
-                    "S ::= S [ N : ] ", "S ::= std_sort ( S )", "S ::= std_reverse ( S )", "S ::= std_find ( S , N )"]
+    list_grammar = ["F ::= ( std_find( S , N ) )", "S ::= std_sort ( S )", "S ::=  x", "S ::= S [ :  F ]",
+                    "S ::= [ N ]", "N ::= 1", "N ::= ( N + N )", "S ::= std_reverse ( S )", "S ::= std_reverse ( S )",
+                    "N ::= 4", "S ::= ( S + S )"]
+    list_grammar2 = ["S ::= x", "S ::= [ ]", "S ::= ( S + S )", "N ::= 1", "N ::= ( N + N )", "S ::= S [ : N ]",
+                     "S ::= S [ N : ] ", "S ::= std_sort ( S )", "S ::= std_reverse ( S )", "S ::= std_find ( S , N )"]
 
     @staticmethod
     def found_sol(sol):
         return not sol.startswith('no program')
-    
+
     #arithmetic synthesize test  start
     def test_aarith_constant_func(self):
         print("running test_arith_constant_func")
@@ -91,7 +94,7 @@ class SynthesizerTest(unittest.TestCase):
         sol = s.find_solution()
         end = time.time()
         assert (not SynthesizerTest.found_sol(sol))
-        if SynthesizerTest.found_sol(sol):
+        if not SynthesizerTest.found_sol(sol):
             with open("test_arith_2_pow_x_unrealizable", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
@@ -177,7 +180,7 @@ class SynthesizerTest(unittest.TestCase):
         sol = s.find_solution()
         end = time.time()
         assert (not SynthesizerTest.found_sol(sol))
-        if SynthesizerTest.found_sol(sol):
+        if not SynthesizerTest.found_sol(sol):
             with open("test_string_last_letter_unrealizable", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
@@ -197,8 +200,91 @@ class SynthesizerTest(unittest.TestCase):
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_string_first_letter_plus_n_plus_lower_x, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
-    #string synthesize test end
+    #string synthesis test end
 
+    #list synthesis test start
+
+    def test_list_constant_1(self):
+        print("running test list constant 1")
+        s = Synthesizer(self.list_grammar, [([1, 2, 3, 4, 5, 6], [1]), ([4, 5, 6], [1]), ([3, 4], [1]),
+                                            ([], [1])])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_list_constant_1.csv", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_list_constant_1, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_list_id(self):
+        print("running test list id")
+        s = Synthesizer(self.list_grammar, [([1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6]), ([4, 5, 6], [4, 5, 6]),
+                                            ([3, 4], [3, 4]), ([], [])])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_list_id.csv", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_list_id, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_list_reverse_sort(self):
+        print("running test reverse sort")
+        s = Synthesizer(self.list_grammar, [([1, 2, 4, 3, 5, 6], [6, 5, 4, 3, 2, 1]), ([5, 4, 6], [6, 5, 4]),
+                                            ([3, 4], [4, 3]), ([], [])])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_list_reverse_sort.csv", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_list_reverse_sort, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_list_sort_until_below_5(self):
+        print("running test list sort until below 5")
+        s = Synthesizer(self.list_grammar, [([1, 2, 4, 3, 5, 6], [1, 2, 3, 4]), ([5, 4, 6], []),
+                                            ([3, 4, 1, 2, 6, 5, 7], [1, 2, 3, 4, 6]), ([2, 1, 5], [1, 2])],
+                        depth_limit=7)
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_list_sort_until_below_5.csv", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_list_sort_until_below_5, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_list_unrealizable(self):
+        print("running test list unique sort")
+        s = Synthesizer(self.list_grammar, [([1, 2, 1, 2, 3, 4, 2], [1, 2, 3, 4]), (6, 5, 4, 7, 6), [4, 5, 6, 7]])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+
+        assert (not SynthesizerTest.found_sol(sol))
+        if not SynthesizerTest.found_sol(sol):
+            with open("test_list_sort_until_below_5.csv", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_list_unrealizable_unique_sort, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    #list synthesis test end
 
     #lambda synthesis test start
 
@@ -251,7 +337,7 @@ class SynthesizerTest(unittest.TestCase):
         sol = s.find_solution()
         end = time.time()
         assert (not SynthesizerTest.found_sol(sol))
-        if SynthesizerTest.found_sol(sol):
+        if not SynthesizerTest.found_sol(sol):
             with open("test_lambda_geq_3_unrealizable", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
@@ -425,7 +511,7 @@ class SynthesizerTest(unittest.TestCase):
     #symbolic example test start
     def test_sym_ex_lst_reverse(self):
         print("running test_sym_ex_lst_reverse")
-        s = Synthesizer(self.list_grammar, [], spec_with_symbolic_ex=[("[a, b, 1]", "[1, b, a]")])
+        s = Synthesizer(self.list_grammar2, [], spec_with_symbolic_ex=[("[a, b, 1]", "[1, b, a]")])
         start = time.time()
         sol = s.find_solution()
         end = time.time()
@@ -439,7 +525,7 @@ class SynthesizerTest(unittest.TestCase):
 
     def test_sym_lst_from_second_to_fourth(self):
         print("running test_sym_lst_from_second_to_fourth")
-        s = Synthesizer(self.list_grammar, [], spec_with_symbolic_ex=[("[a, 3, 1, b, 4]", "[3, 1, b]")])
+        s = Synthesizer(self.list_grammar2, [], spec_with_symbolic_ex=[("[a, 3, 1, b, 4]", "[3, 1, b]")])
         start = time.time()
         sol = s.find_solution()
         end = time.time()
@@ -496,7 +582,7 @@ class SynthesizerTest(unittest.TestCase):
 
     def test_sym_list_last_element(self):
         print("running test_sym_list_last_element")
-        s = Synthesizer(self.list_grammar, [], spec_with_symbolic_ex=[("[a, 3, 1, b, 4]", "[4]")])
+        s = Synthesizer(self.list_grammar2, [], spec_with_symbolic_ex=[("[a, 3, 1, b, 4]", "[4]")])
         start = time.time()
         sol = s.find_solution()
         end = time.time()
@@ -516,7 +602,7 @@ class SynthesizerTest(unittest.TestCase):
         sol = s.find_solution()
         end = time.time()
         assert (not SynthesizerTest.found_sol(sol))
-        if SynthesizerTest.found_sol(sol):
+        if not SynthesizerTest.found_sol(sol):
             with open("test_sym_ex_div_by_5_unrealizable", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
@@ -524,38 +610,5 @@ class SynthesizerTest(unittest.TestCase):
                     f", {end - start}\n")
 
 
-
-
-
 if __name__ == '__main__':
     unittest.main()
-
-
-
-"""
-if __name__ == "__main__":
-
-    grammar = ["S ::= std_filter ( FILTARG , L )", "S ::= std_map ( MAPTARG , L )", "L ::= x",
-               "FILTARG ::= lambda y : y <= NUM", "MAPTARG ::= lambda y : y * y", "NUM ::= 1", "NUM ::= ( NUM + NUM )"]
-    grammar_arith = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )", "N ::= 0",
-                     "N ::= 10"]
-    grammar_lst = ["S ::= x", "S ::= []", "S ::= [ INT ]", "S ::= ( S + S )", "S ::= S [ INT ]",   "INT ::= 0", "INT ::= 1", "INT ::= ( INT + INT )"]
-
-    spec1 = [([0,2,1,4], [0,2,1]), ([1,0], [1,0]), ([4,3,5,4], []), ([2,1,4], [2,1])]
-    spec2 = [([0,0,0,0], [0,0,0,0]), ([1,4,2,5],[1,16,4,25]), ([3,2,2,7],[9,4,4,49])]
-    spec3 = [(0, 100), (2, 300), (3, 970), (4, 2740)]
-    spec4_1 = [([1,2,3],2),([3,5,4,5],5),([1,3,4,5],3)]
-    spec4_2 = [("[b,a]","a+b"),("[10,a,b]","a+b")]
-    s = time.time()
-   # print(Synthesizer(grammar, spec1, lambda_instances=random_int).bottom_up())
-    print(Synthesizer(grammar_lst, [], spec_with_symbolic_ex=spec4_2).bottom_up())
-    print(time.time()-s)
-
-    grammar_arith = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )", "S ::= ( S / S )", "N ::= 0",
-                     "N ::= 1", "N ::= ( N + N )"]
-    spec = [(12,3),(20,5),(44,11),(64,16)]
-    s = time.time()
-    print(Synthesizer(grammar_arith, spec).bottom_up())
-    print(time.time() - s)
-
-"""
