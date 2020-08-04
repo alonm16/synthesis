@@ -1,3 +1,20 @@
-test_arith_constant_func, Found, 0.000997781753540039
-test_lambda_even_less_8_pow_4_not_optimized, Found, 27.435024976730347
-test_lambda_even_less_4_pow_4_optimized, Found, 9.99372935295105
+test_arith_x_plus_1_pow_2, Found, 0.05988001823425293
+test_lambda_1_if_list_distinct_unrealizable_not_optimized, Not Found, 30.30856466293335
+test_lambda_1_if_list_distinct_unrealizable_optimized, Not Found, 30.33680248260498
+test_lambda_even_less_4_pow_4_not_optimized, Found, 2.3407375812530518
+test_lambda_even_less_4_pow_4_optimized, Found, 2.2330210208892822
+test_lambda_filter_leq_3, Found, 0.7709360122680664
+test_lambda_less_4_concat_pow3_not_optimized, Found, 4.197761297225952
+test_lambda_less_4_concat_pow3_optimized, Found, 4.042173385620117
+test_lambda_less_5_pow5_not_optimized, Found, 1.6465873718261719
+test_lambda_less_5_pow5_optimized, Found, 1.6815032958984375
+test_lambda_map_pow2_filter_leq4, Found, 1.061161994934082
+test_lambda_map_pow_2, Found, 0.002033710479736328
+test_lambda_modulo3_concat_even_pow_2_not_optimized, Found, 7.997906684875488
+test_lambda_modulo3_concat_even_pow_2_optimized, Found, 9.03510594367981
+test_string_concat, Found, 0.00653076171875
+test_string_first_letter_plus_n_plus_lower_x, Found, 0.18196725845336914
+test_string_last_letter_unrealizable, Not Found, 511.49872398376465
+test_string_lower_upper_concat, Found, 0.009368896484375
+test_string_concat, Found, 0.0029821395874023438
+test_string_second_letter_upper, Found, 0.020929813385009766
