@@ -20,11 +20,13 @@ class SynthesizerTest(unittest.TestCase):
                        "FILTARG ::= lambda y : ( y + ( y * N ) ) <= N",  "MAPTARG ::= lambda y : y ** N",
                        "MAPTARG ::= lambda y : y * ( y ** N )", "N ::= 1",  "N ::= 2", "N ::= ( N + N )",
                        "FILTARG ::= lambda y : y % N == 0"]
+    list_grammar = ["S ::= x", "S ::= [ ]", "S ::= ( S + S )",  "N ::= 1", "N ::= ( N + N )", "S ::= S [ : N ]",
+                    "S ::= S [ N : ] ", "S ::= std_sort ( S )", "S ::= std_reverse ( S )", "S ::= std_find ( S , N )"]
 
     @staticmethod
     def found_sol(sol):
         return not sol.startswith('no program')
-
+    
     #arithmetic synthesize test  start
     def test_aarith_constant_func(self):
         print("running test_arith_constant_func")
@@ -137,7 +139,7 @@ class SynthesizerTest(unittest.TestCase):
             with open("test_string_pow_3", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
-            f.write(f"test_string_concat, {'Found' if self.found_sol(sol) else 'Not Found'}"
+            f.write(f"test_string_pow_3, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
 
     def test_string_second_letter_upper(self):
@@ -419,6 +421,109 @@ class SynthesizerTest(unittest.TestCase):
                 f"test_lambda_modulo3_concat_even_pow_2_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
                 f", {end - start}\n")
         #lambda optimization synthesis test start
+
+    #symbolic example test start
+    def test_sym_ex_lst_reverse(self):
+        print("running test_sym_ex_lst_reverse")
+        s = Synthesizer(self.list_grammar, [], spec_with_symbolic_ex=[("[a, b, 1]", "[1, b, a]")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_sym_ex_lst_reverse", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_sym_ex_lst_reverse, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_sym_lst_from_second_to_fourth(self):
+        print("running test_sym_lst_from_second_to_fourth")
+        s = Synthesizer(self.list_grammar, [], spec_with_symbolic_ex=[("[a, 3, 1, b, 4]", "[3, 1, b]")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_sym_lst_from_second_to_fourth", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_sym_lst_from_second_to_fourth, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_sym_ex_arith_a_plus_1_pow2(self):
+        print("running test_sym_ex_arith_a_plus_1_pow2")
+        s = Synthesizer(self.arithmetic_grammar, [], spec_with_symbolic_ex=[("a", "(a+1) * (a+1)")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_sym_ex_arith_a_plus_1_pow2", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_sym_ex_arith_a_plus_1_pow2, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_sym_ex_arith_div_by_2(self):
+        print("running test_sym_ex_arith_div_by_2")
+        s = Synthesizer(self.arithmetic_grammar, [], spec_with_symbolic_ex=[("2*a", "a")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_sym_ex_arith_div_by_2", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_sym_ex_arith_div_by_2, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_sym_ex_map_pow_2(self):
+        print("running test_sym_ex_map_pow_2")
+        s = Synthesizer(self.lambda_grammar, [], spec_with_symbolic_ex=[("[a, 1]", "[a*a, 1]"),
+                                                                        ("[a, b, 0]", "[a*a, b*b, 0]")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_sym_ex_map_pow_2", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_sym_ex_map_pow_2, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_sym_list_last_element(self):
+        print("running test_sym_list_last_element")
+        s = Synthesizer(self.list_grammar, [], spec_with_symbolic_ex=[("[a, 3, 1, b, 4]", "[4]")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_sym_list_last_element", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_sym_list_last_element, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    #unrealizable because of depth
+    def test_sym_ex_div_by_5_unrealizable(self):
+        print("running test_sym_ex_div_by_5_unrealizable")
+        s = Synthesizer(self.arithmetic_grammar, [], spec_with_symbolic_ex=[("5*a", "a")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (not SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_sym_ex_div_by_5_unrealizable", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_sym_ex_div_by_5_unrealizable, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+
 
 
 

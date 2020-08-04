@@ -1,27 +1,28 @@
-test_arith_constant_func, Found, 0.0009598731994628906
-test_arith_2_pow_x_unrealizable, Not Found, 108.27552604675293
-test_arith_mul2_minus4, Found, 0.43683385848999023
-test_arith_pow2_div_by_3, Found, 0.8606865406036377
-test_arith_pow_3, Found, 0.001991748809814453
-test_arith_x_plus_1_pow_2, Found, 0.03494715690612793
-test_lambda_1_if_list_distinct_unrealizable_not_optimized, Not Found, 30.257097959518433
-test_lambda_1_if_list_distinct_unrealizable_optimized, Not Found, 24.789674997329712
-test_lambda_even_less_4_pow_4_not_optimized, Found, 1.3304412364959717
-test_lambda_even_less_4_pow_4_optimized, Found, 1.9248502254486084
-test_lambda_filter_leq_3, Found, 0.4837069511413574
-test_lambda_geq_3_unrealizable, Not Found, 39.16125798225403
-test_lambda_less_4_concat_pow3_not_optimized, Found, 2.463407039642334
-test_lambda_less_4_concat_pow3_optimized, Found, 2.4673960208892822
-test_lambda_less_5_pow5_not_optimized, Found, 1.328451156616211
-test_lambda_less_5_pow5_optimized, Found, 1.3453989028930664
-test_lambda_map_pow2_filter_leq4, Found, 0.6263301372528076
-test_lambda_map_pow_2, Found, 0.0
-test_lambda_modulo3_concat_even_pow_2_not_optimized, Found, 4.076095819473267
-test_lambda_modulo3_concat_even_pow_2_optimized, Found, 4.679474592208862
-test_lambda_x_pow_4, Found, 0.002022266387939453
-test_string_concat, Found, 0.0040738582611083984
-test_string_first_letter_plus_n_plus_lower_x, Found, 0.04986715316772461
-test_string_last_letter_unrealizable, Not Found, 277.76681184768677
-test_string_lower_upper_concat, Found, 0.012277603149414062
-test_string_concat, Found, 0.0019884109497070312
-test_string_second_letter_upper, Found, 0.007978200912475586
+test_arith_constant_func, Found, 0.001001119613647461
+test_sym_ex_lst_reverse, Found, 0.015958547592163086
+test_sym_ex_arith_a_plus_2_pow2, Found, 0.1017303466796875
+test_sym_ex_lst_reverse, Found, 0.016954421997070312
+test_sym_ex_arith_a_plus_1_pow2, Found, 0.28523778915405273
+test_sym_ex_lst_reverse, Found, 0.037895917892456055
+test_sym_ex_map_pow_2, Found, 0.00897669792175293
+test_sym_ex_arith_a_plus_1_pow2, Found, 0.1733722686767578
+test_sym_ex_lst_reverse, Found, 0.01695394515991211
+test_sym_ex_map_pow_2, Found, 0.011965751647949219
+test_sym_lst_from_second_to_fourth, Found, 13.008772373199463
+test_sym_ex_arith_a_plus_1_pow2, Found, 0.13331007957458496
+test_sym_ex_arith_div_by_2, Found, 0.033907175064086914
+test_sym_ex_lst_reverse, Found, 0.03690218925476074
+test_sym_ex_map_pow_2, Found, 0.017952442169189453
+test_sym_lst_from_second_to_fourth, Found, 11.646236419677734
+test_sym_ex_arith_a_plus_1_pow2, Found, 0.15111064910888672
+test_sym_ex_arith_div_by_2, Found, 0.048866987228393555
+test_sym_ex_lst_reverse, Found, 0.024936437606811523
+test_sym_ex_map_pow_2, Found, 0.009122610092163086
+test_sym_list_last_element, Found, 0.25335049629211426
+test_sym_lst_from_second_to_fourth, Found, 10.72651481628418
+test_sym_ex_arith_a_plus_1_pow2, Found, 0.13962531089782715
+test_sym_ex_arith_div_by_2, Found, 0.03291153907775879
+test_sym_ex_lst_reverse, Found, 0.01595592498779297
+test_sym_ex_map_pow_2, Found, 0.009973287582397461
+test_sym_list_last_element, Found, 0.16065192222595215
+test_sym_lst_from_second_to_fourth, Found, 12.327406883239746
