@@ -7,8 +7,9 @@ from random import randint
 class SynthesizerTest(unittest.TestCase):
     arithmetic_grammar = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )",
                           "S ::= ( S / S )", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
-    string_grammar = ["S ::= x", "S ::= ( S + S )", "S ::= ( S * N )", "S ::= S [ N ]", "S ::= std_lower ( S )",
-                      "S ::= std_upper ( S )", "S ::= CHAR", "CHAR ::= 'n'", "CHAR ::= 'm'", "CHAR ::= 'o'",
+
+    string_grammar = ["S ::= x", "S ::= ( S + S )", "S ::= S [ N ]", "S ::= std_lower ( S )",
+                      "S ::= std_upper ( S )", "S ::= CHAR", "CHAR ::= 'n'", "CHAR ::= 'm'",
                       "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
     lambda_grammar = ["S ::= std_filter ( FILTARG , S )", "S ::= std_map ( MAPTARG , S )", "S ::= x", "S ::= [ ]",
                       "S ::= [ N ]", "S ::= ( S + S )", "FILTARG ::= lambda y : y <= N", "MAPTARG ::= lambda y : y * y",
@@ -44,7 +45,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_arith_constant_func", 'w') as f:
+            with open("tests/test_arith_constant_func", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'w') as f:
             f.write(f"test_arith_constant_func, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -58,7 +59,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_arith_pow_3", 'w') as f:
+            with open("tests/test_arith_pow_3", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_arith_pow_3, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -72,7 +73,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_arith_mul2_minus4", 'w') as f:
+            with open("tests/test_arith_mul2_minus4", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_arith_mul2_minus4, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -86,7 +87,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_arith_pow2_div_by_3", 'w') as f:
+            with open("tests/test_arith_pow2_div_by_3", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_arith_pow2_div_by_3, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -100,7 +101,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (not SynthesizerTest.found_sol(sol))
         if not SynthesizerTest.found_sol(sol):
-            with open("test_arith_2_pow_x_unrealizable", 'w') as f:
+            with open("tests/test_arith_2_pow_x_unrealizable", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_arith_2_pow_x_unrealizable, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -114,7 +115,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_arith_x_plus_1_pow_2", 'w') as f:
+            with open("tests/test_arith_x_plus_1_pow_2", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_arith_x_plus_1_pow_2, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -130,7 +131,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_string_concat", 'w') as f:
+            with open("tests/test_string_concat", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_string_concat, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -144,7 +145,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_string_pow_3", 'w') as f:
+            with open("tests/test_string_pow_3", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_string_pow_3, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -158,7 +159,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_string_second_letter_upper", 'w') as f:
+            with open("tests/test_string_second_letter_upper", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_string_second_letter_upper, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -172,7 +173,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_string_lower_upper_concat", 'w') as f:
+            with open("tests/test_string_lower_upper_concat", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_string_lower_upper_concat, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -186,7 +187,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (not SynthesizerTest.found_sol(sol))
         if not SynthesizerTest.found_sol(sol):
-            with open("test_string_last_letter_unrealizable", 'w') as f:
+            with open("tests/test_string_last_letter_unrealizable", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_string_last_letter_unrealizable, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -200,7 +201,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_string_first_letter_plus_n_plus_lower_x", 'w') as f:
+            with open("tests/test_string_first_letter_plus_n_plus_lower_x", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_string_first_letter_plus_n_plus_lower_x, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -219,7 +220,7 @@ class SynthesizerTest(unittest.TestCase):
 
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_list_constant_1.csv", 'w') as f:
+            with open("tests/test_list_constant_1.csv", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_list_constant_1, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -235,7 +236,7 @@ class SynthesizerTest(unittest.TestCase):
 
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_list_id.csv", 'w') as f:
+            with open("tests/test_list_id.csv", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_list_id, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -251,7 +252,7 @@ class SynthesizerTest(unittest.TestCase):
 
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_list_reverse_sort.csv", 'w') as f:
+            with open("tests/test_list_reverse_sort.csv", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_list_reverse_sort, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -268,7 +269,7 @@ class SynthesizerTest(unittest.TestCase):
 
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_list_sort_until_below_5.csv", 'w') as f:
+            with open("tests/test_list_sort_until_below_5.csv", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_list_sort_until_below_5, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -283,7 +284,7 @@ class SynthesizerTest(unittest.TestCase):
 
         assert (not SynthesizerTest.found_sol(sol))
         if not SynthesizerTest.found_sol(sol):
-            with open("test_list_sort_until_below_5.csv", 'w') as f:
+            with open("tests/test_list_unrealizable_unique_sort.csv", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_list_unrealizable_unique_sort, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -301,7 +302,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_lambda_filter_leq_3", 'w') as f:
+            with open("tests/test_lambda_filter_leq_3", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_lambda_filter_leq_3, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -315,7 +316,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_lambda_map_pow_2", 'w') as f:
+            with open("tests/test_lambda_map_pow_2", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_lambda_map_pow_2, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -329,7 +330,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_lambda_map_pow2_filter_leq4", 'w') as f:
+            with open("tests/test_lambda_map_pow2_filter_leq4", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_lambda_map_pow2_filter_leq4, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -343,7 +344,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (not SynthesizerTest.found_sol(sol))
         if not SynthesizerTest.found_sol(sol):
-            with open("test_lambda_geq_3_unrealizable", 'w') as f:
+            with open("tests/test_lambda_geq_3_unrealizable", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_lambda_geq_3_unrealizable, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -358,7 +359,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_lambda_x_pow_4", 'w') as f:
+            with open("tests/test_lambda_x_pow_4", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_lambda_x_pow_4, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -377,7 +378,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_lambda_less_5_pow5_not_optimized", 'w') as f:
+            with open("tests/test_lambda_less_5_pow5_not_optimized", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_lambda_less_5_pow5_not_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -390,7 +391,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_lambda_less_5_pow5_optimized", 'w') as f:
+            with open("tests/test_lambda_less_5_pow5_optimized", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_lambda_less_5_pow5_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -404,7 +405,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_lambda_less_4_concat_pow3_not_optimized", 'w') as f:
+            with open("tests/test_lambda_less_4_concat_pow3_not_optimized", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_lambda_less_4_concat_pow3_not_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -417,7 +418,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_lambda_less_4_concat_pow3_optimized", 'w') as f:
+            with open("tests/test_lambda_less_4_concat_pow3_optimized", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_lambda_less_4_concat_pow3_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -433,7 +434,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (not SynthesizerTest.found_sol(sol))
         if not SynthesizerTest.found_sol(sol):
-            with open("test_lambda_1_if_list_distinct_unrealizable_not_optimized", 'w') as f:
+            with open("tests/test_lambda_1_if_list_distinct_unrealizable_not_optimized", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_lambda_1_if_list_distinct_unrealizable_not_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -447,7 +448,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (not SynthesizerTest.found_sol(sol))
         if not SynthesizerTest.found_sol(sol):
-            with open("test_lambda_1_if_list_distinct_unrealizable_optimized", 'w') as f:
+            with open("tests/test_lambda_1_if_list_distinct_unrealizable_optimized", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_lambda_1_if_list_distinct_unrealizable_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -461,7 +462,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_lambda_even_less_4_pow_4_not_optimized", 'w') as f:
+            with open("tests/test_lambda_even_less_4_pow_4_not_optimized", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(
@@ -475,7 +476,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_lambda_even_less_4_pow_4_optimized", 'w') as f:
+            with open("tests/test_lambda_even_less_4_pow_4_optimized", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(
@@ -491,7 +492,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_lambda_modulo3_concat_even_pow_2_not_optimized", 'w') as f:
+            with open("tests/test_lambda_modulo3_concat_even_pow_2_not_optimized", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(
@@ -505,7 +506,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_lambda_modulo3_concat_even_pow_2_optimized", 'w') as f:
+            with open("tests/test_lambda_modulo3_concat_even_pow_2_optimized", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(
@@ -522,7 +523,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_sym_ex_lst_reverse", 'w') as f:
+            with open("tests/test_sym_ex_lst_reverse", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_sym_ex_lst_reverse, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -536,7 +537,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_sym_lst_from_second_to_fourth", 'w') as f:
+            with open("tests/test_sym_lst_from_second_to_fourth", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_sym_lst_from_second_to_fourth, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -550,7 +551,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_sym_ex_arith_a_plus_1_pow2", 'w') as f:
+            with open("tests/test_sym_ex_arith_a_plus_1_pow2", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_sym_ex_arith_a_plus_1_pow2, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -564,7 +565,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_sym_ex_arith_div_by_2", 'w') as f:
+            with open("tests/test_sym_ex_arith_div_by_2", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_sym_ex_arith_div_by_2, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -579,7 +580,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_sym_ex_map_pow_2", 'w') as f:
+            with open("tests/test_sym_ex_map_pow_2", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_sym_ex_map_pow_2, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -593,7 +594,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_sym_list_last_element", 'w') as f:
+            with open("tests/test_sym_list_last_element", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_sym_list_last_element, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -608,7 +609,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (not SynthesizerTest.found_sol(sol))
         if not SynthesizerTest.found_sol(sol):
-            with open("test_sym_ex_div_by_5_unrealizable", 'w') as f:
+            with open("tests/test_sym_ex_div_by_5_unrealizable", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_sym_ex_div_by_5_unrealizable, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -623,7 +624,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_condition_abduction_test1", 'w') as f:
+            with open("tests/test_condition_abduction_test1", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_condition_abduction_test1, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -638,7 +639,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_condition_abduction_test2", 'w') as f:
+            with open("tests/test_condition_abduction_test2", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_condition_abduction_test2, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -653,7 +654,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_condition_abduction_test3", 'w') as f:
+            with open("tests/test_condition_abduction_test3", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_condition_abduction_test3, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -668,7 +669,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (not SynthesizerTest.found_sol(sol))
         if not SynthesizerTest.found_sol(sol):
-            with open("test_condition_abduction_test4_unrealizable", 'w') as f:
+            with open("tests/test_condition_abduction_test4_unrealizable", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_condition_abduction_test4_unrealizable, {'Found' if self.found_sol(sol) else 'Not Found'}"
@@ -683,7 +684,7 @@ class SynthesizerTest(unittest.TestCase):
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("test_condition_abduction_test5", 'w') as f:
+            with open("tests/test_condition_abduction_test5", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_condition_abduction_test5, {'Found' if self.found_sol(sol) else 'Not Found'}"

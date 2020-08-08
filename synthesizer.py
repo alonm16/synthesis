@@ -2,6 +2,7 @@ import time
 from funcs import *
 from random import randint
 
+
 class Program:
     spec = None
     lambda_instances = None
@@ -73,8 +74,13 @@ class Synthesizer:
             return str(program.outputs) in self.seen_outputs[var]
 
     def add_to_spec(self, spec_with_symbolic_example):
-        a_values = [randint(0,100) for _ in range(20)]
-        b_values = [randint(0,100) for _ in range(10)]
+        """
+        creates specification out of the specification with the symbolic examples and
+         adds them to the program specifications
+        :param spec_with_symbolic_example: specification contains symbolic examples
+        """
+        a_values = [randint(0, 100) for _ in range(20)]
+        b_values = [randint(0, 100) for _ in range(10)]
         for (input,output) in spec_with_symbolic_example:
             if 'a' in input and 'b' in input:
                 for a_value in a_values[:10]:
@@ -202,7 +208,14 @@ class Synthesizer:
             return 'no program under depth limitations'
         return program.code
 
-    def find_solution_with_condition_abduction(self, condition_grammer):
+    def find_solution_with_condition_abduction(self, condition_grammar):
+        """
+        selects the program with most correct outputs and creates another program for the rest and connects between them
+        with an if statement
+        :param condition_grammar: grammar to synthesize the condition
+        :return: program with synthesized condition - if exist
+                 else - "no program"
+        """
         sol = self.find_solution()
         if not sol.startswith("no program"):
             return sol
@@ -220,7 +233,7 @@ class Synthesizer:
             return "no program"
         correct_inputs = [(i1, True) for (o1, (i1, o2)) in zip(max_prog.outputs, self.spec) if o1 == o2]
         spec_for_condition_abduction = [(i1, False) for (i1, _) in wrong_input_outputs] + correct_inputs
-        s2 = Synthesizer(condition_grammer, spec_for_condition_abduction)
+        s2 = Synthesizer(condition_grammar, spec_for_condition_abduction)
         sol_condition = s2.find_solution()
         if sol_condition.startswith("no program"):
             return "no program"
