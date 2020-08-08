@@ -37,7 +37,7 @@ class SynthesizerTest(unittest.TestCase):
         return not sol.startswith('no program')
 
     #arithmetic synthesize test  start
-    def test_aarith_constant_func(self):
+    def test_arith_constant_func(self):
         print("running test_arith_constant_func")
         s = Synthesizer(self.arithmetic_grammar, [(134, 1), (20, 1), (3, 1), (0, 1)])
         start = time.time()
@@ -93,7 +93,7 @@ class SynthesizerTest(unittest.TestCase):
             f.write(f"test_arith_pow2_div_by_3, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
 
-    def test_arith_2_pow_x_unrealizable(self):
+    def test_arith_two_pow_x_unrealizable(self):
         print("running test_arith_2_pow_x_unrealizable")
         s = Synthesizer(self.arithmetic_grammar, [(2, 4), (6, 48), (10, 1024), (1, 2)])
         start = time.time()
