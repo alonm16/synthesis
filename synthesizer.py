@@ -39,6 +39,9 @@ class Program:
         """
         return all(o1 == o2 for (o1, (_, o2)) in zip(self.outputs, Program.spec))
 
+    def get_correct_output_num(self):
+        return sum([1 for (o1, (_, o2)) in zip(self.outputs, Program.spec) if o1 == o2])
+
 
 class Synthesizer:
     def __init__(self, grammar, spec, depth_limit=5, time_limit=100, lambda_instances=None, spec_with_symbolic_ex = None):
@@ -199,12 +202,42 @@ class Synthesizer:
             return 'no program under depth limitations'
         return program.code
 
-if __name__ == "__main__":
-    arithmetic_grammar = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )",
-                          "S ::= ( S / S )", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
+    def find_solution_corner_cases(self, condition_grammer):
+        sol = self.find_solution()
+        if not sol.startswith("no program"):
+            return sol
+        max_prog = None
+        max_correct = 0
+        for prog in self.P['S']:
+            curr_correct = prog.get_correct_output_num()
+            if curr_correct > max_correct:
+                max_correct = curr_correct
+                max_prog = prog
+        wrong_input_outputs = [(i1, o2) for (o1, (i1, o2)) in zip(max_prog.outputs, self.spec) if o1 != o2]
+        s1 = Synthesizer(self.grammar, wrong_input_outputs)
+        sol1 = s1.find_solution()
+        if sol1.startswith("no program"):
+            return "no program"
+        correct_inputs = [(i1, True) for (o1, (i1, o2)) in zip(max_prog.outputs, self.spec) if o1 == o2]
+        spec_for_condition_abduction = [(i1, False) for (i1, _) in wrong_input_outputs] + correct_inputs
+        s2 = Synthesizer(condition_grammer, spec_for_condition_abduction)
+        sol_condition = s2.find_solution()
+        if sol_condition.startswith("no program"):
+            return "no program"
+        return max_prog.code + " if " + sol_condition + " else  " + sol1
 
-    s = Synthesizer(arithmetic_grammar, [(1, -2), (5, 6), (3, 2), (10, 16)])
+
+
+
+
+if __name__ == "__main__":
+    arithmetic_grammar = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )",
+                          "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
+    boolean_grammar = ["S ::= x", "S ::= N", "N ::= 0", "N ::= 1", "N ::= ( N + N )", "S ::= ( S < S )",
+                       "S ::= ( S > S )", "S ::= ( S == S )", "S ::= ( not ( S ) )"]
+
+    s = Synthesizer(arithmetic_grammar, [(0, 1), (1, 1), (2, 1), (3, 6), (4, 8), (5, 10)])
     start = time.time()
-    sol = s.find_solution()
+    sol = s.find_solution_corner_cases(boolean_grammar)
     end = time.time()
     print(sol)
