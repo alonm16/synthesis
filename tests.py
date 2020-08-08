@@ -9,7 +9,7 @@ class SynthesizerTest(unittest.TestCase):
                           "S ::= ( S / S )", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
 
     string_grammar = ["S ::= x", "S ::= ( S + S )", "S ::= S [ N ]", "S ::= std_lower ( S )",
-                      "S ::= std_upper ( S )", "S ::= CHAR", "CHAR ::= 'n'", "CHAR ::= 'm'",
+                      "S ::= std_upper ( S )", "S ::= CHAR", "CHAR ::= 'n'", "CHAR ::= 'm'", "CHAR ::= 'o'",
                       "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
     lambda_grammar = ["S ::= std_filter ( FILTARG , S )", "S ::= std_map ( MAPTARG , S )", "S ::= x", "S ::= [ ]",
                       "S ::= [ N ]", "S ::= ( S + S )", "FILTARG ::= lambda y : y <= N", "MAPTARG ::= lambda y : y * y",
@@ -123,18 +123,18 @@ class SynthesizerTest(unittest.TestCase):
     #arithmetic synthesize test  end
 
     #string synthesize test start
-    def test_string_concat(self):
-        print("running test_string_concat")
+    def test_string_concat_o(self):
+        print("running test_string_concat_o")
         s = Synthesizer(self.string_grammar, [("hell", "hello"), ("br", "bro"), ("n", "no"), ("finit", "finito")])
         start = time.time()
         sol = s.find_solution()
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("tests/test_string_concat", 'w') as f:
+            with open("tests/test_string_concat_o", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
-            f.write(f"test_string_concat, {'Found' if self.found_sol(sol) else 'Not Found'}"
+            f.write(f"test_string_concat_o, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
 
     def test_string_pow_3(self):
@@ -276,8 +276,8 @@ class SynthesizerTest(unittest.TestCase):
                     f", {end - start}\n")
 
     def test_list_unrealizable(self):
-        print("running test list unique sort")
-        s = Synthesizer(self.list_grammar, [([1, 2, 1, 2, 3, 4, 2], [1, 2, 3, 4]), (6, 5, 4, 7, 6), [4, 5, 6, 7]])
+        print("running test list unique sort unrealizable")
+        s = Synthesizer(self.list_grammar, [([1, 2, 1, 2, 3, 4, 2], [1, 2, 3, 4]), ([6, 5, 4, 7, 6], [4, 5, 6, 7])])
         start = time.time()
         sol = s.find_solution()
         end = time.time()
@@ -469,7 +469,7 @@ class SynthesizerTest(unittest.TestCase):
                 f"test_lambda_even_less_4_pow_4_not_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
                 f", {end - start}\n")
 
-        s = Synthesizer(self.lambda_grammar2, [([6, 3, 2, 8], [16]), ([5, 2, 4, 12], [16,256]), ([7, 10, 0, 1], [0])],
+        s = Synthesizer(self.lambda_grammar2, [([6, 3, 2, 8], [16]), ([5, 2, 4, 12], [16, 256]), ([7, 10, 0, 1], [0])],
                         lambda_instances=lambda: randint(0, 8))
         start = time.time()
         sol = s.find_solution()
@@ -483,7 +483,7 @@ class SynthesizerTest(unittest.TestCase):
                 f"test_lambda_even_less_4_pow_4_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
                 f", {end - start}\n")
 
-    def test_lambda_modulo3_concat_even_pow_2(self):
+    def test_lambda_optimized_modulo3_concat_even_pow_2(self):
         print("running test_lambda_modulo3_concat_even_pow_2")
         s = Synthesizer(self.lambda_grammar2, [([6, 3, 2, 8], [6, 3, 36, 4, 64]), ([5, 2, 9, 12], [9, 12, 4, 144]), ([3, 15, 0, 1],
                         [3, 15, 0, 0])], depth_limit=6)
@@ -512,7 +512,7 @@ class SynthesizerTest(unittest.TestCase):
             f.write(
                 f"test_lambda_modulo3_concat_even_pow_2_optimized, {'Found' if self.found_sol(sol) else 'Not Found'}"
                 f", {end - start}\n")
-        #lambda optimization synthesis test start
+        #lambda optimization synthesis test end
 
     #symbolic example test start
     def test_sym_ex_lst_reverse(self):

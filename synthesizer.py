@@ -2,7 +2,6 @@ import time
 from funcs import *
 from random import randint
 
-
 class Program:
     spec = None
     lambda_instances = None
@@ -45,7 +44,7 @@ class Program:
 
 
 class Synthesizer:
-    def __init__(self, grammar, spec, depth_limit=5, time_limit=100, lambda_instances=None, spec_with_symbolic_ex = None):
+    def __init__(self, grammar, spec, depth_limit=5, time_limit=50, lambda_instances=None, spec_with_symbolic_ex = None):
         self.spec = spec
         if spec_with_symbolic_ex:
             self.add_to_spec(spec_with_symbolic_ex)
@@ -79,8 +78,8 @@ class Synthesizer:
          adds them to the program specifications
         :param spec_with_symbolic_example: specification contains symbolic examples
         """
-        a_values = [randint(0, 100) for _ in range(20)]
-        b_values = [randint(0, 100) for _ in range(10)]
+        a_values = [randint(0,100) for _ in range(20)]
+        b_values = [randint(0,100) for _ in range(10)]
         for (input,output) in spec_with_symbolic_example:
             if 'a' in input and 'b' in input:
                 for a_value in a_values[:10]:

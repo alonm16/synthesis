@@ -19,8 +19,10 @@ def std_filter(fun, l):
 def std_map(fun, l):
     return list(map(fun, l))
 
+
 def std_lower(s):
     return s.lower()
+
 
 def std_upper(s):
     return s.upper()
