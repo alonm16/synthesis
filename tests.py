@@ -369,7 +369,7 @@ class SynthesizerTest(unittest.TestCase):
     #lambda synthesize test  end
 
     # lambda optimization synthesis test start
-    
+
     def test_lambda_less_5_pow5(self):
         print("running test_lambda_less_5_pow5")
         s = Synthesizer(self.lambda_grammar2, [([6, 3, 2], [243, 32]), ([5, 2], [32]), ([4, 5, 1], [1024, 1])])
@@ -456,7 +456,7 @@ class SynthesizerTest(unittest.TestCase):
 
     def test_lambda_even_less_4_pow_4(self):
         print("running test_lambda_even_less_4_pow_4")
-        s = Synthesizer(self.lambda_grammar2, [([6, 3, 2, 8], [16]), ([5, 2, 4, 12], [16,256]), ([7, 10, 0, 1], [0])])
+        s = Synthesizer(self.lambda_grammar2, [([6, 3, 2, 8], [16]), ([5, 2, 4, 12], [16, 256]), ([7, 10, 0, 1], [0])])
         start = time.time()
         sol = s.find_solution()
         end = time.time()
@@ -692,4 +692,5 @@ class SynthesizerTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
+
     unittest.main()

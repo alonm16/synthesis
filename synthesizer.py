@@ -58,7 +58,10 @@ class Synthesizer:
         self.time = None
         if lambda_instances:
             Program.lambda_instances = [lambda_instances() for _ in range(30)]
+        else:
+            Program.lambda_instances = None
         Program.spec = spec
+
 
     def add_to_outputs(self, var, program):
         if program.is_lambda():
