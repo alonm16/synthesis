@@ -1,1 +1,19 @@
 test_arith_constant_func, Found, 0.008978128433227539
+test_condition_abduction_test1, Found, 35.638773918151855
+test_condition_abduction_test1, Found, 17.958056211471558
+test_condition_abduction_test1, Found, 48.565988063812256
+test_condition_abduction_test1, Found, 20.06870722770691
+test_condition_abduction_test1, Found, 18.330666065216064
+test_condition_abduction_test2, Found, 19.99656891822815
+test_condition_abduction_test2, Found, 17.687984943389893
+test_condition_abduction_test2, Found, 22.349914073944092
+test_condition_abduction_test2, Found, 23.07332682609558
+test_condition_abduction_test3, Found, 17.332871198654175
+test_condition_abduction_test3, Found, 18.3586163520813
+test_condition_abduction_test3, Found, 35.23900055885315
+test_condition_abduction_test2, Found, 22.81832528114319
+test_condition_abduction_test1, Found, 21.3851318359375
+test_condition_abduction_test1, Found, 19.414998531341553
+test_condition_abduction_test4_unrealizable, Not Found, 22.130619764328003
+test_condition_abduction_test5, Found, 17.802851676940918
+test_condition_abduction_test5, Found, 17.166014671325684

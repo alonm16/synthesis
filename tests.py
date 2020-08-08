@@ -4,13 +4,12 @@ import time
 from random import randint
 
 
-
 class SynthesizerTest(unittest.TestCase):
     arithmetic_grammar = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )", "S ::= ( S - S )",
                           "S ::= ( S / S )", "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
     string_grammar = ["S ::= x", "S ::= ( S + S )", "S ::= ( S * N )", "S ::= S [ N ]", "S ::= std_lower ( S )",
-                       "S ::= std_upper ( S )", "S ::= CHAR", "CHAR ::= 'n'", "CHAR ::= 'm'", "CHAR ::= 'o'",
-                       "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
+                      "S ::= std_upper ( S )", "S ::= CHAR", "CHAR ::= 'n'", "CHAR ::= 'm'", "CHAR ::= 'o'",
+                      "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
     lambda_grammar = ["S ::= std_filter ( FILTARG , S )", "S ::= std_map ( MAPTARG , S )", "S ::= x", "S ::= [ ]",
                       "S ::= [ N ]", "S ::= ( S + S )", "FILTARG ::= lambda y : y <= N", "MAPTARG ::= lambda y : y * y",
                       "N ::= 1", "N ::= ( N + N )"]
@@ -20,11 +19,17 @@ class SynthesizerTest(unittest.TestCase):
                        "FILTARG ::= lambda y : ( y + ( y * N ) ) <= N",  "MAPTARG ::= lambda y : y ** N",
                        "MAPTARG ::= lambda y : y * ( y ** N )", "N ::= 1",  "N ::= 2", "N ::= ( N + N )",
                        "FILTARG ::= lambda y : y % N == 0"]
+
     list_grammar = ["F ::= ( std_find( S , N ) )", "S ::= std_sort ( S )", "S ::=  x", "S ::= S [ :  F ]",
                     "S ::= [ N ]", "N ::= 1", "N ::= ( N + N )", "S ::= std_reverse ( S )", "S ::= std_reverse ( S )",
                     "N ::= 4", "S ::= ( S + S )"]
     list_grammar2 = ["S ::= x", "S ::= [ ]", "S ::= ( S + S )", "N ::= 1", "N ::= ( N + N )", "S ::= S [ : N ]",
                      "S ::= S [ N : ] ", "S ::= std_sort ( S )", "S ::= std_reverse ( S )", "S ::= std_find ( S , N )"]
+
+    condition_abduction_grammar = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )",
+                                   "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
+    boolean_grammar = ["S ::= x", "S ::= N", "N ::= 0", "N ::= 1", "N ::= ( N + N )", "S ::= ( not ( S ) )",
+                       "S ::= ( S < S )", "S ::= ( S > S )", "S ::= ( S == S )", "S ::= S % N == 0"]
 
     @staticmethod
     def found_sol(sol):
@@ -594,7 +599,7 @@ class SynthesizerTest(unittest.TestCase):
             f.write(f"test_sym_list_last_element, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
 
-    #unrealizable because of depth
+    #unrealizable because of depth limitation
     def test_sym_ex_div_by_5_unrealizable(self):
         print("running test_sym_ex_div_by_5_unrealizable")
         s = Synthesizer(self.arithmetic_grammar, [], spec_with_symbolic_ex=[("5*a", "a")])
@@ -607,6 +612,81 @@ class SynthesizerTest(unittest.TestCase):
                 f.write(sol)
         with open("synthesizer_tests.csv", 'a') as f:
             f.write(f"test_sym_ex_div_by_5_unrealizable, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    """1 if x<=2 else 2x"""
+    def test_condition_abduction_test1(self):
+        print("running test_condition_abduction_test1")
+        s = Synthesizer(self.condition_abduction_grammar,  [(0, 1), (2, 1), (4, 8), (5, 10)])
+        start = time.time()
+        sol = s.find_solution_with_condition_abduction(self.boolean_grammar)
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_condition_abduction_test1", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_condition_abduction_test1, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    """2x if even else x"""
+    def test_condition_abduction_test2(self):
+        print("running test_condition_abduction_test2")
+        s = Synthesizer(self.condition_abduction_grammar, [(8, 16), (4, 8), (2, 4), (3, 3), (7, 7)])
+        start = time.time()
+        sol = s.find_solution_with_condition_abduction(self.boolean_grammar)
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_condition_abduction_test2", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_condition_abduction_test2, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    """x + 2 if x!=2 else 1"""
+    def test_condition_abduction_test3(self):
+        print("running test_condition_abduction_test3")
+        s = Synthesizer(self.condition_abduction_grammar, [(2, 1), (6, 8), (3, 5), (1, 3)])
+        start = time.time()
+        sol = s.find_solution_with_condition_abduction(self.boolean_grammar)
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_condition_abduction_test3", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_condition_abduction_test3, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    """x*3 if primary else 2"""
+    def test_condition_abduction_test4_unrealizable(self):
+        print("running test_condition_abduction_test4_unrealizable")
+        s = Synthesizer(self.condition_abduction_grammar, [(2, 6), (6, 2), (3, 9), (5, 15), (12, 36)])
+        start = time.time()
+        sol = s.find_solution_with_condition_abduction(self.boolean_grammar)
+        end = time.time()
+        assert (not SynthesizerTest.found_sol(sol))
+        if not SynthesizerTest.found_sol(sol):
+            with open("test_condition_abduction_test4_unrealizable", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_condition_abduction_test4_unrealizable, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    """2x+2 if x % 3 == 0 else x^2"""
+    def test_condition_abduction_test5(self):
+        print("running test_condition_abduction_test5")
+        s = Synthesizer(self.condition_abduction_grammar, [(4, 16), (6, 14), (3, 8), (5, 25)])
+        start = time.time()
+        sol = s.find_solution_with_condition_abduction(self.boolean_grammar)
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("test_condition_abduction_test5", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests.csv", 'a') as f:
+            f.write(f"test_condition_abduction_test5, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
 
 

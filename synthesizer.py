@@ -202,7 +202,7 @@ class Synthesizer:
             return 'no program under depth limitations'
         return program.code
 
-    def find_solution_corner_cases(self, condition_grammer):
+    def find_solution_with_condition_abduction(self, condition_grammer):
         sol = self.find_solution()
         if not sol.startswith("no program"):
             return sol
@@ -225,19 +225,3 @@ class Synthesizer:
         if sol_condition.startswith("no program"):
             return "no program"
         return max_prog.code + " if " + sol_condition + " else  " + sol1
-
-
-
-
-
-if __name__ == "__main__":
-    arithmetic_grammar = ["S ::= x", "S ::= N", "S ::= ( S + S )", "S ::= ( S * S )",
-                          "N ::= 0", "N ::= 1", "N ::= ( N + N )"]
-    boolean_grammar = ["S ::= x", "S ::= N", "N ::= 0", "N ::= 1", "N ::= ( N + N )", "S ::= ( S < S )",
-                       "S ::= ( S > S )", "S ::= ( S == S )", "S ::= ( not ( S ) )"]
-
-    s = Synthesizer(arithmetic_grammar, [(0, 1), (1, 1), (2, 1), (3, 6), (4, 8), (5, 10)])
-    start = time.time()
-    sol = s.find_solution_corner_cases(boolean_grammar)
-    end = time.time()
-    print(sol)
