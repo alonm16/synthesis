@@ -106,6 +106,8 @@ class Synthesizer:
 
             if symbol.isupper():
                 for i in range(cur_len):
+                    if time.time() - self.time > self.time_limit:
+                        raise TimeoutError
                     iteration_programs += [Program(new_programs[i].code + " " + old_program.code,
                                                    max(old_program.depth, new_programs[i].depth)) for old_program in self.P[symbol]]
                 new_programs = iteration_programs
