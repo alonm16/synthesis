@@ -586,18 +586,32 @@ class SynthesizerTest(unittest.TestCase):
             f.write(f"test_sym_ex_map_pow_2, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
 
-    def test_sym_list_last_element(self):
-        print("running test_sym_list_last_element")
+    def test_sym_ex_list_last_element(self):
+        print("running test_sym_ex_list_last_element")
         s = Synthesizer(self.list_grammar2, [], spec_with_symbolic_ex=[("[a, 3, 1, b, 4]", "[4]")])
         start = time.time()
         sol = s.find_solution()
         end = time.time()
         assert (SynthesizerTest.found_sol(sol))
         if SynthesizerTest.found_sol(sol):
-            with open("tests_results/test_sym_list_last_element", 'w') as f:
+            with open("tests_results/test_sym_ex_list_last_element", 'w') as f:
                 f.write(sol)
         with open("synthesizer_tests_report.csv", 'a') as f:
-            f.write(f"test_sym_list_last_element, {'Found' if self.found_sol(sol) else 'Not Found'}"
+            f.write(f"test_sym_ex_list_last_element, {'Found' if self.found_sol(sol) else 'Not Found'}"
+                    f", {end - start}\n")
+
+    def test_sym_ex_list_reverse_from_third(self):
+        print("running test_sym_ex_list_reverse_from_third")
+        s = Synthesizer(self.list_grammar2, [], spec_with_symbolic_ex=[("[a, 3, 1, b, 4]", "[4, b, 1]")])
+        start = time.time()
+        sol = s.find_solution()
+        end = time.time()
+        assert (SynthesizerTest.found_sol(sol))
+        if SynthesizerTest.found_sol(sol):
+            with open("tests_results/test_sym_ex_list_reverse_from_third", 'w') as f:
+                f.write(sol)
+        with open("synthesizer_tests_report.csv", 'a') as f:
+            f.write(f"test_sym_ex_list_reverse_from_third, {'Found' if self.found_sol(sol) else 'Not Found'}"
                     f", {end - start}\n")
 
     #unrealizable because of depth limitation

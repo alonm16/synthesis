@@ -44,7 +44,7 @@ class Program:
 
 
 class Synthesizer:
-    def __init__(self, grammar, spec, depth_limit=5, time_limit=50, lambda_instances=None, spec_with_symbolic_ex = None):
+    def __init__(self, grammar, spec, depth_limit=5, time_limit=70, lambda_instances=None, spec_with_symbolic_ex = None):
         self.spec = spec
         if spec_with_symbolic_ex:
             self.add_to_spec(spec_with_symbolic_ex)
